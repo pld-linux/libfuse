@@ -15,7 +15,8 @@ Name:		fuse
 Version:	1.1
 Release:	0.%{_pre}.%{_rel}@%{_kernel_ver_str}
 Summary:	Filesystem in Userspace
-Source0:	http://download.sourceforge/avf/%{name}-%{version}-%{pre}.tar.gz
+Summary(pl):	System plików w przestrzeni u¿ytkownika
+Source0:	http://dl.sourceforge.net/avf/%{name}-%{version}-%{_pre}.tar.gz
 License:	GPL
 Group:		Applications/System
 URL:		http://sourceforge.net/projects/avf
@@ -26,10 +27,16 @@ Buildroot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 FUSE (Filesystem in Userspace) is a simple interface for userspace
-programs to export a virtual filesystem to the linux kernel. FUSE also
+programs to export a virtual filesystem to the Linux kernel. FUSE also
 aims to provide a secure method for non privileged users to create and
 mount their own filesystem implementations.
 
+%description -l pl
+FUSE stanowi prosty interfejs dla programów dzia³aj±cych w przestrzeni
+u¿ytkownika eksportuj±cy wirtualny system plików do j±dra Linuksa.
+FUSE ma równie¿ na celu udostêpnienie bezpiecznej metody tworzenia i
+montowania w³asnych implementacji systemów plików przez zwyk³ych
+(nieuprzywilejowanych) u¿ytkowników.
 
 %clean
 rm -rf $RPM_BUILD_ROOT
