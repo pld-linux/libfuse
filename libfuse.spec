@@ -13,7 +13,7 @@ Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Version:	1.1
 Release:	%{_rel}@%{_kernel_ver_str}
-License:	GPL
+License:	GPL v2
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/avf/fuse-%{version}.tar.gz
 # Source0-md5:	adfbf15cf196ca597e1ff7fb7839938e
@@ -43,7 +43,7 @@ montowania w³asnych implementacji systemów plików przez zwyk³ych
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Release:	%{_rel}@%{_kernel_ver_str}
-License:	GPL
+License:	GPL v2
 Group:		Applications/System
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
@@ -189,19 +189,21 @@ libtool --mode=install install libfuse.la $RPM_BUILD_ROOT%{_libdir}/libfuse.la
 cd -
 
 %post
-/sbin/depmod -aq
-
-%preun
-/sbin/modprobe -r fuse
+%depmod %{_kernel_ver}
 
 %postun
-/sbin/depmod -aq
+%depmod %{_kernel_ver}
 
+%post -n kernel-smp-misc-fuse
+%depmod %{_kernel_ver}
+
+%postun -n kernel-smp-misc-fuse
+%depmod %{_kernel_ver}
 
 %if %{with kernel}
 %files
 %defattr(644,root,root,755)
-%doc README TODO NEWS INSTALL ChangeLog AUTHORS COPYING COPYING.LIB
+%doc README NEWS ChangeLog AUTHORS
 %doc patch/
 /lib/modules/%{_kernel_ver}/kernel/fs/fuse.ko*
 %endif
