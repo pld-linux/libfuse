@@ -68,10 +68,10 @@ Group:		Applications/System
 Release:	%{_rel}
 
 %description -n libfuse
-- -- empty --
+Shared library for Filesytem in Userspace
 
 %description -n libfuse -l pl
-- -- pusty --
+Biblioteki dzielone Systemu plików w przestrzeni u¿ytkownika
 
 %package -n libfuse-devel
 Summary:	Filesytem in Userspace - Development header fiels and libraries
@@ -80,22 +80,22 @@ Group:		Development/Libraries
 Requires:	libfuse = %{epoch}:%{version}-%{_rel}
 
 %description -n libfuse-devel
-- -- empty --
+Libfuse library header files.
 
 %description -n libfuse-devel -l pl
-- -- pusty --
+Libfuse biblioteki nag³ówkowe dla programistów.
 
 %package -n libfuse-static
 Summary:	Filesytem in Userspace - static libraries
 Summary(pl):	Systemu plików w przestrzeni u¿ytkownika - Biblioteki statyczne
 Group:		Development/Libraries
-Requires:	libfuse-devel = %{epoch}:%{version}-%{_rel}
+Requires:	libfuse-devel = %{epoch}:%{version}-%{_rel}@%{_kernel_ver_str}
 
 %description -n libfuse-static
-- -- empty --
+Static libfuse libraries.
 
 %description -n libfuse-static -l pl
-- -- pusty --
+Statyczne biblioteki libfuse
 
 %package -n fusermount
 Summary:	Filesytem in Userspace utilities
@@ -104,10 +104,12 @@ Group:		Applications/System
 Release:	%{_rel}
 
 %description -n fusermount
-- -- empty --
+Filesytem in Userspace utilities. It provide a secure method for non
+privileged users to create and mount their own filesystem implementations. 
 
 %description -n fusermount -l pl
-- -- pusty --
+Narzêdzia obs³uguj±ce systemu plików w przestrzeni u¿ytkownika. Dostarcza bezpieczn±
+metodê tworzenia i montowania w³asnych systemów plików dla nie uprzywilejowanych userów.
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -211,8 +213,10 @@ cd -
 %if %{with userspace}
 %files -n fusermount
 %defattr(644,root,root,755)
-# suid needed?
+# suid needed? NO!
 %attr(755,root,root) %{_bindir}/fusermount
+# do it ! failed
+# %%attr(755,root,root) %{_sbindir}/mount.fuse
 %endif
 
 %files -n libfuse
