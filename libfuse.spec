@@ -10,7 +10,7 @@ Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Version:	1.4
-%define		_rel	0.1
+%define		_rel	0.2
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Base/Kernel
@@ -18,6 +18,7 @@ Source0:	http://dl.sourceforge.net/sourceforge/fuse/fuse-%{version}.tar.gz
 # Source0-md5:	abdcb47a202d84d844ffbb58dcc7ac8b
 # Source0-size:	126361
 Patch0:		%{name}-configure.in.patch
+Patch1:		%{name}-perm.patch
 URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -125,6 +126,7 @@ rm -rf $RPM_BUILD_ROOT
 %prep
 %setup -q -n fuse-%{version}
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__aclocal}
@@ -148,12 +150,12 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
     ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
     touch include/config/MARKER
     %{__make} -C %{_kernelsrcdir} clean \
-	EXTRA_CFLAGS="-I../include -DFUSE_VERSION='1.1'" \
+	EXTRA_CFLAGS="-I../include -DFUSE_VERSION='1.4'" \
 	RCS_FIND_IGNORE="-name '*.ko' -o" \
 	M=$PWD O=$PWD \
 	%{?with_verbose:V=1}
     %{__make} -C %{_kernelsrcdir} modules \
-	EXTRA_CFLAGS="-I../include -DFUSE_VERSION='1.1'" \
+	EXTRA_CFLAGS="-I../include -DFUSE_VERSION='1.4'" \
 	RCS_FIND_IGNORE="-name '*.ko' -o" \
 	CC="%{__cc}" CPP="%{__cpp}" \
 	M=$PWD O=$PWD \
