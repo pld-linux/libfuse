@@ -6,12 +6,11 @@
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 #
-%define		_rel	1.2
-#
 Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Version:	1.1
+%define		_rel	2
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Applications/System
@@ -126,31 +125,25 @@ rm -rf $RPM_BUILD_ROOT
 %{__automake}
 %configure \
     --enable-lib \
-    --enable-util
+    --enable-util \
+    --with-kernel=%{_kernelsrcdir}
 
 %if %{with kernel}
 cd kernel
-rm -rf built
-mkdir built
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
     if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 	exit 1
     fi
-    %{__make} -C %{_kernelsrcdir} mrproper \
-	SUBDIRS=$PWD \
-	O=$PWD \
-	RCS_FIND_IGNORE="-name built" \
-	%{?with_verbose:V=1}
     rm -rf include
     install -d include/{linux,config}
     ln -sf %{_kernelsrcdir}/config-$cfg .config
-    ln -sf %{_kernelsrcdir}/include/linux/autoconf-${cfg}.h include/linux/autoconf.h
+    ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
     touch include/config/MARKER
-    %{__make} -C %{_kernelsrcdir} modules \
-	SUBDIRS=$PWD \
-	O=$PWD \
+    %{__make} -C %{_kernelsrcdir} clean modules \
+	RCS_FIND_IGNORE="-name '*.ko' -o" \
+	M=$PWD O=$PWD \
 	%{?with_verbose:V=1}
-    mv fuse.ko built/fuse-$cfg.ko
+    mv fuse.ko fuse-$cfg.ko
 done
 cd -
 %endif
@@ -176,8 +169,8 @@ cd -
 %endif
 
 %if %{with kernel}
+cd kernel
 install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/kernel/fs
-cd kernel/built
 install fuse-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
 	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/fs/fuse.ko
 %if %{with smp} && %{with dist_kernel}
@@ -187,7 +180,7 @@ install fuse-smp.ko \
 cd -
 %endif
 
-install include/fuse.h $RPM_BUILD_ROOT%{_includedir}/
+install include/fuse.h $RPM_BUILD_ROOT%{_includedir}
 cd lib
 libtool --mode=install install libfuse.la $RPM_BUILD_ROOT%{_libdir}/libfuse.la
 cd -
@@ -210,6 +203,14 @@ cd -
 %doc README NEWS ChangeLog AUTHORS
 %doc patch/
 /lib/modules/%{_kernel_ver}/kernel/fs/fuse.ko*
+
+%if %{with smp} && %{with dist_kernel}
+%files -n kernel-smp-misc-fuse
+%defattr(644,root,root,755)
+%doc README NEWS ChangeLog AUTHORS
+%doc patch/
+/lib/modules/%{_kernel_ver}smp/kernel/fs/fuse.ko*
+%endif
 %endif
 
 %if %{with userspace}
