@@ -5,19 +5,19 @@
 %bcond_without smp		# without smp packages
 
 %define	kernelrel	%(uname -r | sed -e s/-/_/g)
-%define	_rel		0.1
-%define	_pre		pre2
+#%%define		_rel	0.1
+#%%define		_pre	pre2
 
 #fuse is required by siefs package
 
 # there is another packet in repo named fuse - zx spectrum emulator -- help
 Name:		fuse
 Version:	1.1
-Release:	0.%{_pre}.%{_rel}@%{_kernel_ver_str}
+Release:	1.1@%{_kernel_ver_str}
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
-Source0:	http://dl.sourceforge.net/avf/%{name}-%{version}-%{_pre}.tar.gz
-# Source0-md5:	1a245ad3e849bd662372961a597a7391
+Source0:	http://dl.sourceforge.net/avf/%{name}-%{version}.tar.gz
+# Source0-md5:	adfbf15cf196ca597e1ff7fb7839938e
 License:	GPL
 Group:		Applications/System
 URL:		http://sourceforge.net/projects/avf
@@ -50,7 +50,7 @@ rm -rf $RPM_BUILD_ROOT
 # compile for a different kernel and hope the path is right :-)
 
 #if [ "%{kernelversion}" != $(uname -r) ]; then
-#	for dir in /lib/modules/%{kernelversion}/build   \
+#	for dir in /lib/modules/%{kernelversion}/build \
 #%{_kernelsrcdir}-%{kernelversion} \
 #%{_prefix}/local/src/linux-%{kernelversion} ; do
 #		if [ -d "$dir" ]; then
