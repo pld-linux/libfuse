@@ -20,7 +20,6 @@ License:	GPL v2
 Group:		Base/Kernel
 Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
 # Source0-md5:	6f7fe60795324111fea18143e81512ec
-# Source0-size:	126361
 Patch0:		%{name}-configure.in.patch
 Patch1:		%{name}-perm.patch
 URL:		http://fuse.sourceforge.net/
