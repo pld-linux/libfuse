@@ -1,25 +1,28 @@
 %define kernelversion %(uname -r)
 %define fusemoduledir /lib/modules/%{kernelversion}/kernel/fs/fuse
 
-%define kernelrel %(uname -r | sed -e s/-/_/g)
-%define real_release 6
+%bcond_without dist_kernel	# without distribution kernel
+%bcond_without smp		# without smp packages
 
+%define kernelrel %(uname -r | sed -e s/-/_/g)
+%define	_rel	0.1
+%define	_pre	pre2
+
+#fuse is required by siefs package
+
+# there is another packet in repo named fuse - zx spectrum emulator -- help
 Name:		fuse
-Version:	1.0
-Release:	kernel_%{kernelrel}_%{real_release}
+Version:	1.1
+Release:	0.%{_pre}.%{_rel}@%{_kernel_ver_str}
 Summary:	Filesystem in Userspace
-Source0:	%{name}-%{version}.tar.gz
+Source0:	http://download.sourceforge/avf/%{name}-%{version}-%{pre}.tar.gz
 License:	GPL
 Group:		Applications/System
 URL:		http://sourceforge.net/projects/avf
+%{?with_dist_kernel:BuildRequires:	kernel-headers >= 2.4.0 }
+%{?with_dist_kernel:BuildRequires:	kernel-source >= 2.4.0 }
 Buildroot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # some parts of this specfile are taken from Ian Pilcher's specfile
-
-# don't restrict to RedHat kernels but also allow compilation with
-# vanilla kernels, too.
-#Requires: kernel = %{kernelrel}, redhat-release >= 7
-#BuildRequires: kernel-source = %{kernelrel}
-
 
 %description
 FUSE (Filesystem in Userspace) is a simple interface for userspace
@@ -29,7 +32,7 @@ mount their own filesystem implementations.
 
 
 %clean
-case "$RPM_BUILD_ROOT" in *-root) rm -rf $RPM_BUILD_ROOT ;; esac
+rm -rf $RPM_BUILD_ROOT
 
 %prep
 %setup -q
@@ -37,16 +40,17 @@ case "$RPM_BUILD_ROOT" in *-root) rm -rf $RPM_BUILD_ROOT ;; esac
 %build
 # invoke configure with the --with-kernel option in case we attempt to
 # compile for a different kernel and hope the path is right :-)
-if [ "%{kernelversion}" != $(uname -r) ]; then
-	for dir in /lib/modules/%{kernelversion}/build   \
-%{_kernelsrcdir}-%{kernelversion} \
-%{_prefix}/local/src/linux-%{kernelversion} ; do
-		if [ -d "$dir" ]; then
-			WITH_KERNEL="--with-kernel=$dir"
-			break
-		fi
-	done
-fi
+
+#if [ "%{kernelversion}" != $(uname -r) ]; then
+#	for dir in /lib/modules/%{kernelversion}/build   \
+#%{_kernelsrcdir}-%{kernelversion} \
+#%{_prefix}/local/src/linux-%{kernelversion} ; do
+#		if [ -d "$dir" ]; then
+#			WITH_KERNEL="--with-kernel=$dir"
+#			break
+#		fi
+#	done
+#fi
 
 ./configure \
 	--prefix=%{_prefix} \
@@ -63,7 +67,7 @@ fi
 
 %install
 rm -rf $RPM_BUILD_ROOT
-case "$RPM_BUILD_ROOT" in *-root) rm -rf $RPM_BUILD_ROOT ;; esac
+
 %{__make} install \
 	prefix=$RPM_BUILD_ROOT%{_prefix} \
 	fusemoduledir=$RPM_BUILD_ROOT%{fusemoduledir}
