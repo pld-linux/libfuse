@@ -24,8 +24,8 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
-BuildRequires:	rpmbuild(macros) >= 1.153
 %endif
+BuildRequires:	rpmbuild(macros) >= 1.164
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
 %{?with_dist_kernel:Requires(postun):	kernel}
