@@ -9,24 +9,25 @@
 Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
-Version:	1.3
-%define		_rel	1
+Version:	1.4
+%define		_rel	0.1
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
-Group:		Applications/System
-Source0:	http://dl.sourceforge.net/avf/fuse-%{version}.tar.gz
-# Source0-md5:	78c55543079dd18c476d2a27bb5a1af4
+Group:		Base/Kernel
+Source0:	http://dl.sourceforge.net/sourceforge/fuse/fuse-%{version}.tar.gz
+# Source0-md5:	abdcb47a202d84d844ffbb58dcc7ac8b
 # Source0-size:	126361
 Patch0:		%{name}-configure.in.patch
-URL:		http://sourceforge.net/projects/avf
+URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
-%if %{with kernel} && %{with dist_kernel}
-BuildRequires:	kernel-module-build
+%if %{with kernel}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
+BuildRequires:	rpmbuild(macros) >= 1.153
 %endif
 %{?with_dist_kernel:%requires_releq_kernel_up}
-BuildRequires:	rpmbuild(macros) >= 1.153
 Requires(post,postun):	/sbin/depmod
+%{?with_dist_kernel:Requires(postun):	kernel}
 Buildroot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -47,10 +48,11 @@ Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
-Group:		Applications/System
+Group:		Base/Kernel
 Provides:	kernel-misc-fuse
-%{?with_dist_kernel:%requires_releq_kernel_up}
+%{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
+%{?with_dist_kernel:Requires(postun):	kernel-smp}
 
 %description -n kernel-smp-misc-fuse
 FUSE (Filesystem in Userspace) is a simple interface for userspace
@@ -145,11 +147,18 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
     ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
     ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
     touch include/config/MARKER
-    %{__make} -C %{_kernelsrcdir} clean modules \
+    %{__make} -C %{_kernelsrcdir} clean \
 	EXTRA_CFLAGS="-I../include -DFUSE_VERSION='1.1'" \
 	RCS_FIND_IGNORE="-name '*.ko' -o" \
 	M=$PWD O=$PWD \
 	%{?with_verbose:V=1}
+    %{__make} -C %{_kernelsrcdir} modules \
+	EXTRA_CFLAGS="-I../include -DFUSE_VERSION='1.1'" \
+	RCS_FIND_IGNORE="-name '*.ko' -o" \
+	CC="%{__cc}" CPP="%{__cpp}" \
+	M=$PWD O=$PWD \
+	%{?with_verbose:V=1}
+
     mv fuse.ko fuse-$cfg.ko
 done
 cd -
