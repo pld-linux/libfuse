@@ -1,11 +1,13 @@
 #
 # TODO:
-#		- userspace and *-libs subpackages
+#		- kernel-smp-* subpackage
+#		- fix %%install and check %%files
 #
 # Condtional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	smp		# without smp packages
+%bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 #
 Name:		kernel-misc-fuse
@@ -26,8 +28,6 @@ BuildRequires:	kernel-module-build
 Requires(post,postun):	/sbin/depmod
 Buildroot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define	fusemoduledir	/lib/modules/%{_kernel_ver}/kernel/fs/fuse
-
 %description
 FUSE (Filesystem in Userspace) is a simple interface for userspace
 programs to export a virtual filesystem to the Linux kernel. FUSE also
@@ -41,11 +41,57 @@ FUSE ma równie¿ na celu udostêpnienie bezpiecznej metody tworzenia i
 montowania w³asnych implementacji systemów plików przez zwyk³ych
 (nieuprzywilejowanych) u¿ytkowników.
 
+%package -n libfuse
+Summary:	Shared library for Filesytem in Userspace
+Summary(pl):	Biblioteki dzielone Systemu plików w przestrzeni u¿ytkownika
+Group:		Applications/System
+
+%description -n libfuse
+- -- empty --
+
+%description -n libfuse -l pl
+- -- pusty --
+
+%package -n libfuse-devel
+Summary:	Filesytem in Userspace - Development header fiels and libraries
+Summary(pl):	Systemu plików w przestrzeni u¿ytkownika - Biblioteki dzielone
+Group:		Development/Libraries
+Requires:	libfuse = %{epoch}:%{version}-%{release}
+
+%description -n libfuse-devel
+- -- empty --
+
+%description -n libfuse-devel -l pl
+- -- pusty --
+
+%package -n libfuse-static
+Summary:	Filesytem in Userspace - static libraries
+Summary(pl):	Systemu plików w przestrzeni u¿ytkownika - Biblioteki statyczne
+Group:		Development/Libraries
+Requires:	libfuse-devel = %{epoch}:%{version}-%{release}
+
+%description -n libfuse-static
+- -- empty --
+
+%description -n libfuse-static -l pl
+- -- pusty --
+
+%package -n fusermount
+Summary:	Filesytem in Userspace utilities
+Summary(pl):	Narzêdzia obs³uguj±ce systemu plików w przestrzeni u¿ytkownika
+Group:		Applications/System
+
+%description -n fusermount
+- -- empty --
+
+%description -n fusermount -l pl
+- -- pusty --
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %prep
-%setup -q
+%setup -q -n fuse-%{version}
 %patch0 -p1
 
 %build
@@ -88,7 +134,7 @@ done
 libtool --mode=link %{__cc} -o libfuse.la fuse.lo fuse_mt.lo helper.lo mount.lo -rpath %{_libdir}
 cd -
 
-%{__make} -C util
+%{?with_userspace:%{__make} -C util}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -115,19 +161,30 @@ rm -rf example/.deps/
 /sbin/depmod -aq
 
 
-
+%if %{with kernel}
 %files
 %defattr(644,root,root,755)
 %doc README TODO NEWS INSTALL ChangeLog AUTHORS COPYING COPYING.LIB
-%doc example/
 %doc patch/
+/lib/modules/%{_kernel_ver}/kernel/fs/fuse.ko*
+%endif
 
-%{fusemoduledir}
-%{_prefix}/lib/libfuse.a
-%{_includedir}/fuse.h
-%{_prefix}/lib/fuse/
-
-# you want to install fusermount SUID root?
-# Then uncomment the "%attr()"-line in favour of the line after it.
-#%attr(4500,root,root) %{prefix}/bin/fusermount
+%if %{with userspace}
+%files -n fusermount
+# suid needed?
 %attr(755,root,root) %{_bindir}/fusermount
+%endif
+
+%files -n libfuse
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libfuse.so.*.*.*
+
+%files -n libfuse-devel
+%defattr(644,root,root,755)
+%{_includedir}/fuse.h
+%{_libdir}/libfuse.la
+%attr(755,root,root) %{_libdir}/libfuse.so
+
+%files -n libfuse-static
+%defattr(644,root,root,755)
+%{_prefix}/lib/libfuse.a
