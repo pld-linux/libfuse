@@ -10,7 +10,7 @@ Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Version:	1.4
-%define		_rel	0.2
+%define		_rel	0.3
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Base/Kernel
@@ -150,12 +150,11 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
     ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
     touch include/config/MARKER
     %{__make} -C %{_kernelsrcdir} clean \
-	EXTRA_CFLAGS="-I../include -DFUSE_VERSION='1.4'" \
 	RCS_FIND_IGNORE="-name '*.ko' -o" \
 	M=$PWD O=$PWD \
 	%{?with_verbose:V=1}
     %{__make} -C %{_kernelsrcdir} modules \
-	EXTRA_CFLAGS="-I../include -DFUSE_VERSION='1.4'" \
+	EXTRA_CFLAGS='-I../include -DFUSE_VERSION=\"1.4\"' \
 	RCS_FIND_IGNORE="-name '*.ko' -o" \
 	CC="%{__cc}" CPP="%{__cpp}" \
 	M=$PWD O=$PWD \
@@ -166,6 +165,7 @@ done
 cd -
 %endif
 
+%if %{with userspace}
 cd lib
 for f in fuse.c fuse_mt.c helper.c mount.c; do
 libtool --mode=compile --tag=CC %{__cc} -c -I. -I../include -DHAVE_CONFIG_H $f
@@ -173,7 +173,8 @@ done
 libtool --mode=link %{__cc} -o libfuse.la fuse.lo fuse_mt.lo helper.lo mount.lo -rpath %{_libdir}
 cd -
 
-%{?with_userspace:%{__make} -C util}
+%{__make} -C util
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -183,6 +184,10 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_includedir},%{_libdir}}
 %if %{with userspace}
 cd util
 install fusermount $RPM_BUILD_ROOT%{_bindir}/
+cd -
+install include/fuse.h $RPM_BUILD_ROOT%{_includedir}
+cd lib
+libtool --mode=install install libfuse.la $RPM_BUILD_ROOT%{_libdir}/libfuse.la
 cd -
 %endif
 
@@ -195,13 +200,7 @@ install fuse-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
 install fuse-smp.ko \
 	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/kernel/fs/fuse.ko
 %endif
-cd -
 %endif
-
-install include/fuse.h $RPM_BUILD_ROOT%{_includedir}
-cd lib
-libtool --mode=install install libfuse.la $RPM_BUILD_ROOT%{_libdir}/libfuse.la
-cd -
 
 %post
 %depmod %{_kernel_ver}
@@ -238,7 +237,6 @@ cd -
 %attr(755,root,root) %{_bindir}/fusermount
 # do it ! failed
 # %%attr(755,root,root) %{_sbindir}/mount.fuse
-%endif
 
 %files -n libfuse
 %defattr(644,root,root,755)
@@ -253,3 +251,4 @@ cd -
 %files -n libfuse-static
 %defattr(644,root,root,755)
 %{_libdir}/libfuse.a
+%endif
