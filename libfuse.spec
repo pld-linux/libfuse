@@ -1,17 +1,20 @@
 #
 # Condtional build:
 %bcond_without	dist_kernel	# without distribution kernel
+%bcond_without	kernel		# don't build kernel modules
 %bcond_without	smp		# without smp packages
+%bcond_with	verbose		# verbose build (V=1)
 #
 Name:		fuse
-Version:	1.1
-Release:	1.1@%{_kernel_ver_str}
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
-Source0:	http://dl.sourceforge.net/avf/%{name}-%{version}.tar.gz
-# Source0-md5:	adfbf15cf196ca597e1ff7fb7839938e
+Version:	1.1
+Release:	1.1@%{_kernel_ver_str}
 License:	GPL
 Group:		Applications/System
+Source0:	http://dl.sourceforge.net/avf/%{name}-%{version}.tar.gz
+# Source0-md5:	adfbf15cf196ca597e1ff7fb7839938e
+Patch0:		%{name}-configure.in.patch
 URL:		http://sourceforge.net/projects/avf
 %{?with_dist_kernel:BuildRequires:	kernel-headers >= 2.4.0 }
 %{?with_dist_kernel:BuildRequires:	kernel-source >= 2.4.0 }
@@ -37,11 +40,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
-./configure --prefix=%{_prefix}
+%{__aclocal}
+%{__autoconf}
+%{__automake}
+%configure
 
-# kernel module
+%if %{with kernel}
 cd kernel
 rm -rf built
 mkdir built
@@ -63,20 +70,19 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	SUBDIRS=$PWD \
 	O=$PWD \
 	%{?with_verbose:V=1}
-    mv fuse.ko built/fuse-$cfg.ko
+    cp fuse.ko built/fuse-$cfg.ko
 done
 cd -
+%endif
 
-%{__make} -C lib
+cd lib
+for f in fuse.c fuse_mt.c helper.c mount.c; do
+libtool --mode=compile --tag=CC %{__cc} -c -I. -I../include -DHAVE_CONFIG_H $f
+done
+libtool --mode=link %{__cc} -o libfuse.la fuse.lo fuse_mt.lo helper.lo mount.lo -rpath %{_libdir}
+cd -
+
 %{__make} -C util
-#%{__make} check
-
-## Now build the library as a shared object
-#cd lib
-#gcc -fPIC -DHAVE_CONFIG_H -I../include -Wall -W -g -O2 -c *.c
-#gcc -shared -Wl,-soname,libfuse.so.%{major_ver} -o libfuse.so.%{version} *.o
-#cd ..
-
 
 %install
 rm -rf $RPM_BUILD_ROOT
