@@ -10,7 +10,7 @@ Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Version:	1.1
-%define		_rel	2
+%define		_rel	3
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Applications/System
@@ -22,6 +22,7 @@ URL:		http://sourceforge.net/projects/avf
 BuildRequires:	kernel-module-build
 %endif
 %{?with_dist_kernel:%requires_releq_kernel_up}
+BuildRequires:	rpmbuild(macros) >= 1.153
 Requires(post,postun):	/sbin/depmod
 Buildroot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -138,6 +139,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
     install -d include/{linux,config}
     ln -sf %{_kernelsrcdir}/config-$cfg .config
     ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
+    ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
     touch include/config/MARKER
     %{__make} -C %{_kernelsrcdir} clean modules \
 	EXTRA_CFLAGS="-I../include -DFUSE_VERSION='1.1'" \
