@@ -13,7 +13,7 @@ Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Version:	2.2
-%define		_rel	2
+%define		_rel	3
 Release:	%{_rel}@%{_kernel_ver_str}
 Epoch:		0
 License:	GPL v2
@@ -29,6 +29,7 @@ BuildRequires:	automake
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
 %endif
 BuildRequires:	libtool
+BuildRequires:	sed >= 4.0
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
 %{?with_dist_kernel:Requires(postun):	kernel}
@@ -76,6 +77,7 @@ Summary:	Shared library for Filesytem in Userspace
 Summary(pl):	Biblioteki dzielone Systemu plików w przestrzeni u¿ytkownika
 Group:		Applications/System
 Release:	%{_rel}
+Obsoletes:	fusermount
 
 %description -n libfuse
 Shared library for Filesytem in Userspace
@@ -109,26 +111,11 @@ Static libfuse libraries.
 %description -n libfuse-static -l pl
 Statyczne biblioteki libfuse
 
-%package -n fusermount
-Summary:	Filesytem in Userspace utilities
-Summary(pl):	Narzêdzia obs³uguj±ce systemu plików w przestrzeni u¿ytkownika
-Group:		Applications/System
-Release:	%{_rel}
-
-%description -n fusermount
-Filesytem in Userspace utilities. It provide a secure method for non
-privileged users to create and mount their own filesystem
-implementations.
-
-%description -n fusermount -l pl
-Narzêdzia obs³uguj±ce systemu plików w przestrzeni u¿ytkownika.
-Dostarcza bezpieczn± metodê tworzenia i montowania w³asnych systemów
-plików dla nie uprzywilejowanych userów.
-
 %prep
 %setup -q -n fuse-%{version}
 %patch0 -p1
 #patch1 -p1
+sed -i '/FUSERMOUNT_PROG/s,fusermount,%{_libdir}/fusermount,' lib/mount.c
 
 %build
 %{__libtoolize}
@@ -180,7 +167,7 @@ done
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
+install -d $RPM_BUILD_ROOT{%{_libdir},%{_pkgconfigdir}}
 
 %if %{with userspace}
 for DIR in include lib util; do
@@ -188,6 +175,7 @@ for DIR in include lib util; do
 	DESTDIR=$RPM_BUILD_ROOT
 done
 
+mv $RPM_BUILD_ROOT%{_bindir}/fusermount $RPM_BUILD_ROOT%{_libdir}
 install fuse.pc $RPM_BUILD_ROOT%{_pkgconfigdir}
 %endif
 
@@ -235,16 +223,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with userspace}
-%files -n fusermount
-%defattr(644,root,root,755)
-# suid needed? NO!
-%attr(755,root,root) %{_bindir}/fusermount
-# do it ! failed
-# %%attr(755,root,root) %{_sbindir}/mount.fuse
-
 %files -n libfuse
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libfuse.so.*.*.*
+%attr(755,root,root) %{_libdir}/fusermount
 
 %files -n libfuse-devel
 %defattr(644,root,root,755)
