@@ -216,6 +216,9 @@ rm -rf $RPM_BUILD_ROOT
 %postun -n kernel-smp-misc-fuse
 %depmod %{_kernel_ver}smp
 
+%post -n libfuse -p /sbin/ldconfig
+%postun -n libfuse -p /sbin/ldconfig
+
 %if %{with kernel}
 %files
 %defattr(644,root,root,755)
