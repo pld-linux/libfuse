@@ -98,7 +98,9 @@ rm -rf $RPM_BUILD_ROOT
 %{__aclocal}
 %{__autoconf}
 %{__automake}
-%configure
+%configure \
+    --enable-lib \
+    --enable-util
 
 %if %{with kernel}
 cd kernel
