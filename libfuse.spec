@@ -1,16 +1,8 @@
-%define	kernelversion	%(uname -r)
-%define	fusemoduledir	/lib/modules/%{kernelversion}/kernel/fs/fuse
-
-%bcond_without dist_kernel	# without distribution kernel
-%bcond_without smp		# without smp packages
-
-%define	kernelrel	%(uname -r | sed -e s/-/_/g)
-#%%define		_rel	0.1
-#%%define		_pre	pre2
-
-#fuse is required by siefs package
-
-# there is another packet in repo named fuse - zx spectrum emulator -- help
+#
+# Condtional build:
+%bcond_without	dist_kernel	# without distribution kernel
+%bcond_without	smp		# without smp packages
+#
 Name:		fuse
 Version:	1.1
 Release:	1.1@%{_kernel_ver_str}
@@ -24,7 +16,8 @@ URL:		http://sourceforge.net/projects/avf
 %{?with_dist_kernel:BuildRequires:	kernel-headers >= 2.4.0 }
 %{?with_dist_kernel:BuildRequires:	kernel-source >= 2.4.0 }
 Buildroot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-# some parts of this specfile are taken from Ian Pilcher's specfile
+
+%define	fusemoduledir	/lib/modules/%{_kernel_ver}/kernel/fs/fuse
 
 %description
 FUSE (Filesystem in Userspace) is a simple interface for userspace
@@ -46,25 +39,37 @@ rm -rf $RPM_BUILD_ROOT
 %setup -q
 
 %build
-# invoke configure with the --with-kernel option in case we attempt to
-# compile for a different kernel and hope the path is right :-)
+./configure --prefix=%{_prefix}
 
-#if [ "%{kernelversion}" != $(uname -r) ]; then
-#	for dir in /lib/modules/%{kernelversion}/build \
-#%{_kernelsrcdir}-%{kernelversion} \
-#%{_prefix}/local/src/linux-%{kernelversion} ; do
-#		if [ -d "$dir" ]; then
-#			WITH_KERNEL="--with-kernel=$dir"
-#			break
-#		fi
-#	done
-#fi
+# kernel module
+cd kernel
+rm -rf built
+mkdir built
+for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
+    if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
+	exit 1
+    fi
+    %{__make} -C %{_kernelsrcdir} mrproper \
+	SUBDIRS=$PWD \
+	O=$PWD \
+	RCS_FIND_IGNORE="-name built" \
+	%{?with_verbose:V=1}
+    rm -rf include
+    install -d include/{linux,config}
+    ln -sf %{_kernelsrcdir}/config-$cfg .config
+    ln -sf %{_kernelsrcdir}/include/linux/autoconf-${cfg}.h include/linux/autoconf.h
+    touch include/config/MARKER
+    %{__make} -C %{_kernelsrcdir} modules \
+	SUBDIRS=$PWD \
+	O=$PWD \
+	%{?with_verbose:V=1}
+    mv fuse.ko built/fuse-$cfg.ko
+done
+cd -
 
-./configure \
-	--prefix=%{_prefix} \
-	$WITH_KERNEL
-%{__make}
-%{__make} check
+%{__make} -C lib
+%{__make} -C util
+#%{__make} check
 
 ## Now build the library as a shared object
 #cd lib
