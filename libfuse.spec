@@ -6,7 +6,7 @@
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 #
-%define		_rel	1.1
+%define		_rel	1.2
 #
 Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
