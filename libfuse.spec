@@ -1,12 +1,12 @@
-%define kernelversion %(uname -r)
-%define fusemoduledir /lib/modules/%{kernelversion}/kernel/fs/fuse
+%define	kernelversion	%(uname -r)
+%define	fusemoduledir	/lib/modules/%{kernelversion}/kernel/fs/fuse
 
 %bcond_without dist_kernel	# without distribution kernel
 %bcond_without smp		# without smp packages
 
-%define kernelrel %(uname -r | sed -e s/-/_/g)
-%define	_rel	0.1
-%define	_pre	pre2
+%define	kernelrel	%(uname -r | sed -e s/-/_/g)
+%define	_rel		0.1
+%define	_pre		pre2
 
 #fuse is required by siefs package
 
@@ -17,6 +17,7 @@ Release:	0.%{_pre}.%{_rel}@%{_kernel_ver_str}
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Source0:	http://dl.sourceforge.net/avf/%{name}-%{version}-%{_pre}.tar.gz
+# Source0-md5:	1a245ad3e849bd662372961a597a7391
 License:	GPL
 Group:		Applications/System
 URL:		http://sourceforge.net/projects/avf
