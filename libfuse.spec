@@ -1,4 +1,7 @@
 #
+# TODO:
+#		- userspace and *-libs subpackages
+#
 # Condtional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
@@ -16,8 +19,11 @@ Source0:	http://dl.sourceforge.net/avf/%{name}-%{version}.tar.gz
 # Source0-md5:	adfbf15cf196ca597e1ff7fb7839938e
 Patch0:		%{name}-configure.in.patch
 URL:		http://sourceforge.net/projects/avf
-%{?with_dist_kernel:BuildRequires:	kernel-headers >= 2.4.0 }
-%{?with_dist_kernel:BuildRequires:	kernel-source >= 2.4.0 }
+%if %{with kernel} && %{with dist_kernel}
+BuildRequires:	kernel-module-build
+%endif
+%{?with_dist_kernel:%requires_releq_kernel_up}
+Requires(post,postun):	/sbin/depmod
 Buildroot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define	fusemoduledir	/lib/modules/%{_kernel_ver}/kernel/fs/fuse
