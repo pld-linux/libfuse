@@ -15,7 +15,7 @@ Version:	1.1
 Release:	1.1@%{_kernel_ver_str}
 License:	GPL
 Group:		Applications/System
-Source0:	http://dl.sourceforge.net/avf/%{name}-%{version}.tar.gz
+Source0:	http://dl.sourceforge.net/avf/fuse-%{version}.tar.gz
 # Source0-md5:	adfbf15cf196ca597e1ff7fb7839938e
 Patch0:		%{name}-configure.in.patch
 URL:		http://sourceforge.net/projects/avf
