@@ -1,8 +1,4 @@
 #
-# TODO:
-#		- kernel-smp-* subpackage
-#		- fix %%install and check %%files
-#
 # Condtional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
@@ -10,11 +6,13 @@
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 #
+%define		_rel	1.1
+#
 Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Version:	1.1
-Release:	1.1@%{_kernel_ver_str}
+Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/avf/fuse-%{version}.tar.gz
@@ -41,10 +39,33 @@ FUSE ma równie¿ na celu udostêpnienie bezpiecznej metody tworzenia i
 montowania w³asnych implementacji systemów plików przez zwyk³ych
 (nieuprzywilejowanych) u¿ytkowników.
 
+%package -n kernel-smp-misc-fuse
+Summary:	Filesystem in Userspace
+Summary(pl):	System plików w przestrzeni u¿ytkownika
+Release:	%{_rel}@%{_kernel_ver_str}
+License:	GPL
+Group:		Applications/System
+%{?with_dist_kernel:%requires_releq_kernel_up}
+Requires(post,postun):	/sbin/depmod
+
+%description -n kernel-smp-misc-fuse
+FUSE (Filesystem in Userspace) is a simple interface for userspace
+programs to export a virtual filesystem to the Linux kernel. FUSE also
+aims to provide a secure method for non privileged users to create and
+mount their own filesystem implementations.
+
+%description -n kernel-smp-misc-fuse -l pl
+FUSE stanowi prosty interfejs dla programów dzia³aj±cych w przestrzeni
+u¿ytkownika eksportuj±cy wirtualny system plików do j±dra Linuksa.
+FUSE ma równie¿ na celu udostêpnienie bezpiecznej metody tworzenia i
+montowania w³asnych implementacji systemów plików przez zwyk³ych
+(nieuprzywilejowanych) u¿ytkowników.
+
 %package -n libfuse
 Summary:	Shared library for Filesytem in Userspace
 Summary(pl):	Biblioteki dzielone Systemu plików w przestrzeni u¿ytkownika
 Group:		Applications/System
+Release:	%{_rel}
 
 %description -n libfuse
 - -- empty --
@@ -56,7 +77,7 @@ Group:		Applications/System
 Summary:	Filesytem in Userspace - Development header fiels and libraries
 Summary(pl):	Systemu plików w przestrzeni u¿ytkownika - Biblioteki dzielone
 Group:		Development/Libraries
-Requires:	libfuse = %{epoch}:%{version}-%{release}
+Requires:	libfuse = %{epoch}:%{version}-%{_rel}
 
 %description -n libfuse-devel
 - -- empty --
@@ -68,7 +89,7 @@ Requires:	libfuse = %{epoch}:%{version}-%{release}
 Summary:	Filesytem in Userspace - static libraries
 Summary(pl):	Systemu plików w przestrzeni u¿ytkownika - Biblioteki statyczne
 Group:		Development/Libraries
-Requires:	libfuse-devel = %{epoch}:%{version}-%{release}
+Requires:	libfuse-devel = %{epoch}:%{version}-%{_rel}
 
 %description -n libfuse-static
 - -- empty --
@@ -80,6 +101,7 @@ Requires:	libfuse-devel = %{epoch}:%{version}-%{release}
 Summary:	Filesytem in Userspace utilities
 Summary(pl):	Narzêdzia obs³uguj±ce systemu plików w przestrzeni u¿ytkownika
 Group:		Applications/System
+Release:	%{_rel}
 
 %description -n fusermount
 - -- empty --
@@ -141,17 +163,30 @@ cd -
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
-	prefix=$RPM_BUILD_ROOT%{_prefix} \
-	fusemoduledir=$RPM_BUILD_ROOT%{fusemoduledir}
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_includedir},%{_libdir}}
 
-install -d $RPM_BUILD_ROOT%{_prefix}/lib/fuse/example
-install -s -m 755 example/{fusexmp,hello,null} $RPM_BUILD_ROOT%{_prefix}/lib/fuse/example/
+%if %{with userspace}
+cd util
+install fusermount $RPM_BUILD_ROOT%{_bindir}/
+cd -
+%endif
 
-# remove binaries form example folder so we can include it
-# as a form of documentation into the package
-%{__make} -C example clean
-rm -rf example/.deps/
+%if %{with kernel}
+install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/kernel/fs
+cd kernel/built
+install fuse-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
+	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/fs/fuse.ko
+%if %{with smp} && %{with dist_kernel}
+install fuse-smp.ko \
+	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/kernel/fs/fuse.ko
+%endif
+cd -
+%endif
+
+install include/fuse.h $RPM_BUILD_ROOT%{_includedir}/
+cd lib
+libtool --mode=install install libfuse.la $RPM_BUILD_ROOT%{_libdir}/libfuse.la
+cd -
 
 %post
 /sbin/depmod -aq
