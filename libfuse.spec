@@ -5,7 +5,7 @@
 %bcond_without	smp		# without smp packages
 %bcond_with	verbose		# verbose build (V=1)
 #
-Name:		fuse
+Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Version:	1.1
@@ -70,7 +70,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	SUBDIRS=$PWD \
 	O=$PWD \
 	%{?with_verbose:V=1}
-    cp fuse.ko built/fuse-$cfg.ko
+    mv fuse.ko built/fuse-$cfg.ko
 done
 cd -
 %endif
