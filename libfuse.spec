@@ -210,6 +210,7 @@ cd -
 
 %if %{with userspace}
 %files -n fusermount
+%defattr(644,root,root,755)
 # suid needed?
 %attr(755,root,root) %{_bindir}/fusermount
 %endif
@@ -226,4 +227,4 @@ cd -
 
 %files -n libfuse-static
 %defattr(644,root,root,755)
-%{_prefix}/lib/libfuse.a
+%{_libdir}/libfuse.a
