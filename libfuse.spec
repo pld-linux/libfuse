@@ -9,13 +9,14 @@
 Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
-Version:	1.1
-%define		_rel	3
+Version:	1.3
+%define		_rel	1
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/avf/fuse-%{version}.tar.gz
-# Source0-md5:	adfbf15cf196ca597e1ff7fb7839938e
+# Source0-md5:	78c55543079dd18c476d2a27bb5a1af4
+# Source0-size:	126361
 Patch0:		%{name}-configure.in.patch
 URL:		http://sourceforge.net/projects/avf
 BuildRequires:	autoconf
