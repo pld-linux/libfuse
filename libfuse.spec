@@ -140,6 +140,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
     ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
     touch include/config/MARKER
     %{__make} -C %{_kernelsrcdir} clean modules \
+	EXTRA_CFLAGS="-I../include -DFUSE_VERSION='1.1'" \
 	RCS_FIND_IGNORE="-name '*.ko' -o" \
 	M=$PWD O=$PWD \
 	%{?with_verbose:V=1}
