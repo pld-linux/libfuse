@@ -77,6 +77,7 @@ Biblioteki dzielone Systemu plików w przestrzeni u¿ytkownika
 Summary:	Filesytem in Userspace - Development header fiels and libraries
 Summary(pl):	Systemu plików w przestrzeni u¿ytkownika - Biblioteki dzielone
 Group:		Development/Libraries
+Release:	%{_rel}
 Requires:	libfuse = %{epoch}:%{version}-%{_rel}
 
 %description -n libfuse-devel
@@ -89,7 +90,8 @@ Libfuse biblioteki nag³ówkowe dla programistów.
 Summary:	Filesytem in Userspace - static libraries
 Summary(pl):	Systemu plików w przestrzeni u¿ytkownika - Biblioteki statyczne
 Group:		Development/Libraries
-Requires:	libfuse-devel = %{epoch}:%{version}-%{_rel}@%{_kernel_ver_str}
+Release:	%{_rel}
+Requires:	libfuse-devel = %{epoch}:%{version}-%{_rel}
 
 %description -n libfuse-static
 Static libfuse libraries.
