@@ -48,6 +48,7 @@ Summary(pl):	System plików w przestrzeni u¿ytkownika
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Applications/System
+Provides:	kernel-misc-fuse
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
 
