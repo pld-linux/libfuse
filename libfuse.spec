@@ -18,6 +18,8 @@ Source0:	http://dl.sourceforge.net/avf/fuse-%{version}.tar.gz
 # Source0-md5:	adfbf15cf196ca597e1ff7fb7839938e
 Patch0:		%{name}-configure.in.patch
 URL:		http://sourceforge.net/projects/avf
+BuildRequires:	autoconf
+BuildRequires:	automake
 %if %{with kernel} && %{with dist_kernel}
 BuildRequires:	kernel-module-build
 %endif
