@@ -1,4 +1,7 @@
 #
+# TODO:
+# - review patches
+#
 # Condtional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
@@ -9,14 +12,14 @@
 Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
-Version:	1.4
-%define		_rel	1
+Version:	2.2
+%define		_rel	0.4
 Release:	%{_rel}@%{_kernel_ver_str}
 Epoch:		0
 License:	GPL v2
 Group:		Base/Kernel
 Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
-# Source0-md5:	abdcb47a202d84d844ffbb58dcc7ac8b
+# Source0-md5:	6f7fe60795324111fea18143e81512ec
 # Source0-size:	126361
 Patch0:		%{name}-configure.in.patch
 Patch1:		%{name}-perm.patch
@@ -125,11 +128,13 @@ plików dla nie uprzywilejowanych userów.
 
 %prep
 %setup -q -n fuse-%{version}
-%patch0 -p1
-%patch1 -p1
+%patch0 -p0
+#patch1 -p1
 
 %build
+%{__libtoolize}
 %{__aclocal}
+%{__autoheader}
 %{__autoconf}
 %{__automake}
 %configure \
@@ -139,6 +144,7 @@ plików dla nie uprzywilejowanych userów.
 
 %if %{with kernel}
 cd kernel
+
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
     if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 	exit 1
@@ -154,7 +160,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	M=$PWD O=$PWD \
 	%{?with_verbose:V=1}
     %{__make} -C %{_kernelsrcdir} modules \
-	EXTRA_CFLAGS='-I../include -DFUSE_VERSION=\"1.4\"' \
+	EXTRA_CFLAGS='-I../include -DFUSE_VERSION=\"2.2\"' \
 	RCS_FIND_IGNORE="-name '*.ko' -o" \
 	CC="%{__cc}" CPP="%{__cpp}" \
 	M=$PWD O=$PWD \
@@ -166,29 +172,24 @@ cd -
 %endif
 
 %if %{with userspace}
-cd lib
-for f in fuse.c fuse_mt.c helper.c mount.c; do
-libtool --mode=compile --tag=CC %{__cc} -c -I. -I../include -DHAVE_CONFIG_H $f
+cp kernel/fuse_kernel.h include/
+for DIR in include lib util; do
+%{__make} -C $DIR
 done
-libtool --mode=link %{__cc} -o libfuse.la fuse.lo fuse_mt.lo helper.lo mount.lo -rpath %{_libdir}
-cd -
-
-%{__make} -C util
 %endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_includedir},%{_libdir}}
+install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
 
 %if %{with userspace}
-cd util
-install fusermount $RPM_BUILD_ROOT%{_bindir}/
-cd -
-install include/fuse.h $RPM_BUILD_ROOT%{_includedir}
-cd lib
-libtool --mode=install install libfuse.la $RPM_BUILD_ROOT%{_libdir}/libfuse.la
-cd -
+for DIR in include lib util; do
+%{__make} -C $DIR install \
+	DESTDIR=$RPM_BUILD_ROOT
+done
+
+install fuse.pc $RPM_BUILD_ROOT%{_pkgconfigdir}
 %endif
 
 %if %{with kernel}
@@ -223,15 +224,13 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with kernel}
 %files
 %defattr(644,root,root,755)
-%doc README NEWS ChangeLog AUTHORS
-%doc patch/
+%doc README NEWS ChangeLog AUTHORS doc/*
 /lib/modules/%{_kernel_ver}/kernel/fs/fuse.ko*
 
 %if %{with smp} && %{with dist_kernel}
 %files -n kernel-smp-misc-fuse
 %defattr(644,root,root,755)
-%doc README NEWS ChangeLog AUTHORS
-%doc patch/
+%doc README NEWS ChangeLog AUTHORS doc/*
 /lib/modules/%{_kernel_ver}smp/kernel/fs/fuse.ko*
 %endif
 %endif
@@ -250,9 +249,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n libfuse-devel
 %defattr(644,root,root,755)
-%{_includedir}/fuse.h
+%{_includedir}/fuse*
 %{_libdir}/libfuse.la
 %attr(755,root,root) %{_libdir}/libfuse.so
+%{_pkgconfigdir}/fuse.pc
 
 %files -n libfuse-static
 %defattr(644,root,root,755)
