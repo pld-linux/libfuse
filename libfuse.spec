@@ -12,9 +12,10 @@ Summary(pl):	System plików w przestrzeni u¿ytkownika
 Version:	1.4
 %define		_rel	0.4
 Release:	%{_rel}@%{_kernel_ver_str}
+Epoch:		0
 License:	GPL v2
 Group:		Base/Kernel
-Source0:	http://dl.sourceforge.net/sourceforge/fuse/fuse-%{version}.tar.gz
+Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
 # Source0-md5:	abdcb47a202d84d844ffbb58dcc7ac8b
 # Source0-size:	126361
 Patch0:		%{name}-configure.in.patch
@@ -25,7 +26,6 @@ BuildRequires:	automake
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
 %endif
-BuildRequires:	rpmbuild(macros) >= 1.164
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
 %{?with_dist_kernel:Requires(postun):	kernel}
@@ -114,14 +114,13 @@ Release:	%{_rel}
 
 %description -n fusermount
 Filesytem in Userspace utilities. It provide a secure method for non
-privileged users to create and mount their own filesystem implementations. 
+privileged users to create and mount their own filesystem
+implementations.
 
 %description -n fusermount -l pl
-Narzêdzia obs³uguj±ce systemu plików w przestrzeni u¿ytkownika. Dostarcza bezpieczn±
-metodê tworzenia i montowania w³asnych systemów plików dla nie uprzywilejowanych userów.
-
-%clean
-rm -rf $RPM_BUILD_ROOT
+Narzêdzia obs³uguj±ce systemu plików w przestrzeni u¿ytkownika.
+Dostarcza bezpieczn± metodê tworzenia i montowania w³asnych systemów
+plików dla nie uprzywilejowanych userów.
 
 %prep
 %setup -q -n fuse-%{version}
@@ -201,6 +200,9 @@ install fuse-smp.ko \
 	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/kernel/fs/fuse.ko
 %endif
 %endif
+
+%clean
+rm -rf $RPM_BUILD_ROOT
 
 %post
 %depmod %{_kernel_ver}
