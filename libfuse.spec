@@ -10,7 +10,7 @@ Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Version:	1.4
-%define		_rel	0.3
+%define		_rel	0.4
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Base/Kernel
@@ -209,10 +209,10 @@ install fuse-smp.ko \
 %depmod %{_kernel_ver}
 
 %post -n kernel-smp-misc-fuse
-%depmod %{_kernel_ver}
+%depmod %{_kernel_ver}smp
 
 %postun -n kernel-smp-misc-fuse
-%depmod %{_kernel_ver}
+%depmod %{_kernel_ver}smp
 
 %if %{with kernel}
 %files
