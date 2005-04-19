@@ -13,13 +13,14 @@ Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Version:	2.2
-%define		_rel	3
+%define		_rel	3.1
 Release:	%{_rel}@%{_kernel_ver_str}
 Epoch:		0
 License:	GPL v2
 Group:		Base/Kernel
 Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
 # Source0-md5:	6f7fe60795324111fea18143e81512ec
+Source1:	fuse.conf
 Patch0:		%{name}-configure.in.patch
 Patch1:		%{name}-perm.patch
 URL:		http://fuse.sourceforge.net/
@@ -166,8 +167,7 @@ done
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
-install -d $RPM_BUILD_ROOT{%{_libdir},%{_pkgconfigdir}}
+install -d $RPM_BUILD_ROOT{%{_libdir},%{_pkgconfigdir},/etc}
 
 %if %{with userspace}
 for DIR in include lib util; do
@@ -177,6 +177,7 @@ done
 
 mv $RPM_BUILD_ROOT%{_bindir}/fusermount $RPM_BUILD_ROOT%{_libdir}
 install fuse.pc $RPM_BUILD_ROOT%{_pkgconfigdir}
+install %{SOURCE1} $RPM_BUILD_ROOT/etc
 %endif
 
 %if %{with kernel}
@@ -225,6 +226,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 %files -n libfuse
 %defattr(644,root,root,755)
+%attr(644,root,root) %config(noreplace) %verify(not size mtime md5) /etc/fuse.conf
 %attr(755,root,root) %{_libdir}/libfuse.so.*.*.*
 %attr(755,root,root) %{_libdir}/fusermount
 
