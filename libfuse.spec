@@ -12,14 +12,14 @@
 Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
-Version:	2.2
-%define		_rel	3.1
+Version:	2.2.1
+%define		_rel	0.1
 Release:	%{_rel}@%{_kernel_ver_str}
 Epoch:		0
 License:	GPL v2
 Group:		Base/Kernel
 Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
-# Source0-md5:	6f7fe60795324111fea18143e81512ec
+# Source0-md5:	250d89b9c7b6ecf531df60c67f75737d
 Source1:	fuse.conf
 Patch0:		%{name}-configure.in.patch
 Patch1:		%{name}-perm.patch
@@ -141,6 +141,9 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
     ln -sf %{_kernelsrcdir}/config-$cfg .config
     ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
     ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
+    %if %{without dist_kernel}
+        ln -sf %{_kernelsrcdir}/scripts
+    %endif
     touch include/config/MARKER
     %{__make} -C %{_kernelsrcdir} clean \
 	RCS_FIND_IGNORE="-name '*.ko' -o" \
