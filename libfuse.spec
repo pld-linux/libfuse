@@ -13,7 +13,7 @@ Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Version:	2.2.1
-%define		_rel	0.1
+%define		_rel	1
 Release:	%{_rel}@%{_kernel_ver_str}
 Epoch:		0
 License:	GPL v2
@@ -79,6 +79,7 @@ Summary(pl):	Biblioteki dzielone Systemu plików w przestrzeni u¿ytkownika
 Group:		Applications/System
 Release:	%{_rel}
 Obsoletes:	fusermount
+Provides:	fusermount
 
 %description -n libfuse
 Shared library for Filesytem in Userspace
