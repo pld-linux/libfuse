@@ -79,7 +79,6 @@ Summary(pl):	Biblioteki dzielone Systemu plików w przestrzeni u¿ytkownika
 Group:		Applications/System
 Release:	%{_rel}
 Obsoletes:	fusermount
-Provides:	fusermount
 
 %description -n libfuse
 Shared library for Filesytem in Userspace
