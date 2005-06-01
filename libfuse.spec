@@ -13,7 +13,7 @@ Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Version:	2.2.1
-%define		_rel	2
+%define		_rel	3
 Release:	%{_rel}@%{_kernel_ver_str}
 Epoch:		0
 License:	GPL v2
