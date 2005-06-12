@@ -12,14 +12,14 @@
 Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
-Version:	2.2.1
-%define		_rel	3
+Version:	2.3.0
+%define		_rel	1
 Release:	%{_rel}@%{_kernel_ver_str}
 Epoch:		0
 License:	GPL v2
 Group:		Base/Kernel
 Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
-# Source0-md5:	250d89b9c7b6ecf531df60c67f75737d
+# Source0-md5:	0bee98df5b2a29841f75fc188975eabc
 Source1:	fuse.conf
 Patch0:		%{name}-configure.in.patch
 Patch1:		%{name}-perm.patch
