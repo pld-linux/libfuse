@@ -22,7 +22,6 @@ Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
 # Source0-md5:	0bee98df5b2a29841f75fc188975eabc
 Source1:	fuse.conf
 Patch0:		%{name}-configure.in.patch
-Patch1:		%{name}-perm.patch
 URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -115,7 +114,6 @@ Statyczne biblioteki libfuse
 %prep
 %setup -q -n fuse-%{version}
 %patch0 -p1
-#patch1 -p1
 sed -i '/FUSERMOUNT_PROG/s,fusermount,%{_bindir}/fusermount,' lib/mount.c
 
 %build
