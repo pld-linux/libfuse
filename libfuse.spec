@@ -169,7 +169,7 @@ done
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_pkgconfigdir},/etc}
+install -d $RPM_BUILD_ROOT{%{_pkgconfigdir},%{_sysconfdir}}
 
 %if %{with userspace}
 for DIR in include lib util; do
@@ -178,7 +178,7 @@ for DIR in include lib util; do
 done
 
 install fuse.pc $RPM_BUILD_ROOT%{_pkgconfigdir}
-install %{SOURCE1} $RPM_BUILD_ROOT/etc
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
 %endif
 
 %if %{with kernel}
@@ -227,7 +227,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 %files -n libfuse
 %defattr(644,root,root,755)
-%attr(644,root,root) %config(noreplace) %verify(not size mtime md5) /etc/fuse.conf
+%attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fuse.conf
 %attr(755,root,root) %{_libdir}/libfuse.so.*.*.*
 %attr(755,root,root) %{_bindir}/fusermount
 
