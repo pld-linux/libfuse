@@ -9,11 +9,15 @@
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 #
+%ifarch sparc
+%undefine with_smp
+%endif
+#
 Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Version:	2.3.0
-%define		_rel	1
+%define		_rel	2
 Release:	%{_rel}@%{_kernel_ver_str}
 Epoch:		0
 License:	GPL v2
@@ -138,7 +142,13 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
     install -d include/{linux,config}
     ln -sf %{_kernelsrcdir}/config-$cfg .config
     ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
+%ifarch ppc ppc64
+    install -d include/asm
+    [ ! -d %{_kernelsrcdir}/include/asm-powerpc ] || ln -sf %{_kernelsrcdir}/include/asm-powerpc/* include/asm
+    [ ! -d %{_kernelsrcdir}/include/asm-%{_target_base_arch} ] || ln -snf %{_kernelsrcdir}/include/asm-%{_target_base_arch}/* include/asm
+%else
     ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
+%endif
     ln -sf %{_kernelsrcdir}/Module.symvers-$cfg Module.symvers
     %if %{without dist_kernel}
         [ ! -x %{_kernelsrcdir}/scripts/kallsyms ] || ln -sf %{_kernelsrcdir}/scripts
