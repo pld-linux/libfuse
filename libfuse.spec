@@ -16,16 +16,16 @@
 Name:		kernel-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
-Version:	2.3.0
-%define		_rel	2
+Version:	2.5.1
+%define		_rel	1
 Release:	%{_rel}@%{_kernel_ver_str}
 Epoch:		0
 License:	GPL v2
 Group:		Base/Kernel
 Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
-# Source0-md5:	0bee98df5b2a29841f75fc188975eabc
+# Source0-md5:	c752f881c8b6586ce086fc8df3fb16e8
 Source1:	fuse.conf
-Patch0:		%{name}-configure.in.patch
+Patch0:		%{name}-Makefile.am.patch
 URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -189,6 +189,7 @@ done
 
 install fuse.pc $RPM_BUILD_ROOT%{_pkgconfigdir}
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
+mv $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/{40-,}fuse.rules
 %endif
 
 %if %{with kernel}
@@ -237,9 +238,11 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 %files -n libfuse
 %defattr(644,root,root,755)
-%attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fuse.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fuse.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/fuse.rules
 %attr(755,root,root) %{_libdir}/libfuse.so.*.*.*
 %attr(755,root,root) %{_bindir}/fusermount
+%attr(755,root,root) /sbin/mount.fuse
 
 %files -n libfuse-devel
 %defattr(644,root,root,755)
