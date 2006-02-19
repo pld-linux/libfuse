@@ -7,14 +7,14 @@
 %bcond_with	verbose		# verbose build (V=1)
 #
 %ifarch sparc
-%undefine with_smp
+%undefine	with_smp
 %endif
 #
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Name:		libfuse
 Version:	2.5.2
-%define		_rel	1
+%define		_rel	2
 Release:	%{_rel}
 Epoch:		0
 License:	GPL v2
@@ -28,6 +28,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
+BuildRequires:	rpmbuild(macros) >= 1.217
 %endif
 BuildRequires:	libtool
 BuildRequires:	sed >= 4.0
@@ -81,9 +82,11 @@ Summary(pl):	System plików w przestrzeni u¿ytkownika
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
-%{?with_dist_kernel:Requires(postun):	kernel}
+%if %{with dist_kernel}
+%requires_releq_kernel_up
+Requires(postun):	%releq_kernel_up
+%endif
 
 %description -n kernel-misc-fuse
 FUSE (Filesystem in Userspace) is a simple interface for userspace
@@ -105,9 +108,11 @@ Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Base/Kernel
 Provides:	kernel-misc-fuse
-%{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
-%{?with_dist_kernel:Requires(postun):	kernel-smp}
+%if %{with dist_kernel}
+%requires_releq_kernel_smp
+Requires(postun):	%releq_kernel_smp
+%endif
 
 %description -n kernel-smp-misc-fuse
 FUSE (Filesystem in Userspace) is a simple interface for userspace
@@ -135,54 +140,51 @@ sed -i '/FUSERMOUNT_PROG/s,fusermount,%{_bindir}/fusermount,' lib/mount.c
 %{__autoconf}
 %{__automake}
 %configure \
+	--enable-kernel-module \
 	--enable-lib \
 	--enable-util \
 	--with-kernel=%{_kernelsrcdir}
-
-%if %{with kernel}
-cd kernel
-
-for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
-    if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
-	exit 1
-    fi
-    rm -rf include
-    install -d include/{linux,config}
-    ln -sf %{_kernelsrcdir}/config-$cfg .config
-    ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
-%ifarch ppc ppc64
-    install -d include/asm
-    [ ! -d %{_kernelsrcdir}/include/asm-powerpc ] || ln -sf %{_kernelsrcdir}/include/asm-powerpc/* include/asm
-    [ ! -d %{_kernelsrcdir}/include/asm-%{_target_base_arch} ] || ln -snf %{_kernelsrcdir}/include/asm-%{_target_base_arch}/* include/asm
-%else
-    ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
-%endif
-    ln -sf %{_kernelsrcdir}/Module.symvers-$cfg Module.symvers
-    %if %{without dist_kernel}
-        [ ! -x %{_kernelsrcdir}/scripts/kallsyms ] || ln -sf %{_kernelsrcdir}/scripts
-    %endif
-    touch include/config/MARKER
-    %{__make} -C %{_kernelsrcdir} clean \
-	RCS_FIND_IGNORE="-name '*.ko' -o" \
-	M=$PWD O=$PWD \
-	%{?with_verbose:V=1}
-    %{__make} -C %{_kernelsrcdir} modules \
-	EXTRA_CFLAGS='-I../include -DFUSE_VERSION=\"2.2\"' \
-	RCS_FIND_IGNORE="-name '*.ko' -o" \
-	CC="%{__cc}" CPP="%{__cpp}" \
-	M=$PWD O=$PWD \
-	%{?with_verbose:V=1}
-
-    mv fuse.ko fuse-$cfg.ko
-done
-cd -
-%endif
 
 %if %{with userspace}
 cp kernel/fuse_kernel.h include/
 for DIR in include lib util; do
 %{__make} -C $DIR
 done
+%endif
+
+%if %{with kernel}
+cd kernel
+for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
+	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
+		exit 1
+	fi
+	install -d o/include/linux
+	ln -sf %{_kernelsrcdir}/config-$cfg o/.config
+	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
+	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
+%if %{with dist_kernel}
+	%{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
+%else
+	install -d o/include/config
+	touch o/include/config/MARKER
+	ln -sf %{_kernelsrcdir}/scripts o/scripts
+%endif
+	%{__make} -C %{_kernelsrcdir} clean \
+		RCS_FIND_IGNORE="-name '*.ko' -o" \
+		SYSSRC=%{_kernelsrcdir} \
+		SYSOUT=$PWD/o \
+		M=$PWD O=$PWD/o \
+		%{?with_verbose:V=1}
+	%{__make} -C %{_kernelsrcdir} modules \
+		CC="%{__cc}" CPP="%{__cpp}" \
+		SYSSRC=%{_kernelsrcdir} \
+		SYSOUT=$PWD/o \
+		M=$PWD O=$PWD/o \
+		%{?with_verbose:V=1}
+
+	mv fuse.ko fuse-$cfg.ko
+done
+cd -
 %endif
 
 %install
