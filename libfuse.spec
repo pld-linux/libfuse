@@ -14,7 +14,7 @@ Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Name:		libfuse
 Version:	2.5.2
-%define		_rel	2
+%define		_rel	3
 Release:	%{_rel}
 Epoch:		0
 License:	GPL v2
