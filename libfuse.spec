@@ -10,11 +10,11 @@
 %undefine	with_smp
 %endif
 #
+%define		_rel	3
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Name:		libfuse
 Version:	2.5.2
-%define		_rel	3
 Release:	%{_rel}
 Epoch:		0
 License:	GPL v2
@@ -27,7 +27,7 @@ URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.217
 %endif
 BuildRequires:	libtool
@@ -66,8 +66,8 @@ Pliki nag³ówkowe biblioteki libfuse.
 %package static
 Summary:	Filesytem in Userspace - static library
 Summary(pl):	System plików w przestrzeni u¿ytkownika - biblioteka statyczna
-Group:		Development/Libraries
 Release:	%{_rel}
+Group:		Development/Libraries
 Requires:	libfuse-devel = %{epoch}:%{version}-%{_rel}
 
 %description static
@@ -107,8 +107,8 @@ Summary(pl):	System plików w przestrzeni u¿ytkownika
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Base/Kernel
-Provides:	kernel-misc-fuse
 Requires(post,postun):	/sbin/depmod
+Provides:	kernel-misc-fuse
 %if %{with dist_kernel}
 %requires_releq_kernel_smp
 Requires(postun):	%releq_kernel_smp
