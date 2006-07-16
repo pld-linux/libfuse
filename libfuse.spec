@@ -34,6 +34,10 @@ BuildRequires:	libtool
 BuildRequires:	sed >= 4.0
 Buildroot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%if %{without kernel}
+%undefine with_dist_kernel
+%endif
+
 %description
 FUSE (Filesystem in Userspace) is a simple interface for userspace
 programs to export a virtual filesystem to the Linux kernel. FUSE also
@@ -140,10 +144,10 @@ sed -i '/FUSERMOUNT_PROG/s,fusermount,%{_bindir}/fusermount,' lib/mount.c
 %{__autoconf}
 %{__automake}
 %configure \
-	--enable-kernel-module \
+	--%{?with_kernel:en}%{!?with_kernel:dis}able-kernel-module \
 	--enable-lib \
 	--enable-util \
-	--with-kernel=%{_kernelsrcdir}
+	%{?with_kernel:--with-kernel=%{_kernelsrcdir}}
 
 %if %{with userspace}
 cp kernel/fuse_kernel.h include/
