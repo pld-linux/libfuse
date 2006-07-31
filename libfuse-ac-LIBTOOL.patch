@@ -1,0 +1,13 @@
+--- fuse-2.5.3/configure.in~	2006-04-10 10:43:46.000000000 +0200
++++ fuse-2.5.3/configure.in	2006-07-31 16:00:29.000000000 +0200
+@@ -3,9 +3,7 @@
+ AM_INIT_AUTOMAKE
+ AM_CONFIG_HEADER(include/config.h)
+ 
+-m4_ifdef([LT_INIT],
+-	[LT_INIT],
+-	[AC_PROG_LIBTOOL])
++AC_PROG_LIBTOOL
+ AC_PROG_CC
+ 
+ # compatibility for automake < 1.8
