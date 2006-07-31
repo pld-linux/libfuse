@@ -23,6 +23,7 @@ Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
 # Source0-md5:	9c7e8b6606b9f158ae20b8521ba2867c
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
+Patch1:		%{name}-ac-LIBTOOL.patch
 URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -134,6 +135,7 @@ montowania w³asnych implementacji systemów plików przez zwyk³ych
 %prep
 %setup -q -n fuse-%{version}
 %patch0 -p1
+%patch1 -p1
 
 sed -i '/FUSERMOUNT_PROG/s,fusermount,%{_bindir}/fusermount,' lib/mount.c
 
