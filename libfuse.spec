@@ -10,7 +10,7 @@
 %undefine	with_smp
 %endif
 #
-%define		_rel	4
+%define		_rel	5
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Name:		libfuse
@@ -205,7 +205,6 @@ done
 
 install fuse.pc $RPM_BUILD_ROOT%{_pkgconfigdir}
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
-mv $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/{40-,}fuse.rules
 %endif
 
 %if %{with kernel}
@@ -242,7 +241,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README NEWS ChangeLog AUTHORS doc/*
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fuse.conf
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/fuse.rules
 %attr(755,root,root) %{_bindir}/fusermount
 %attr(755,root,root) /sbin/mount.fuse
 %attr(755,root,root) %{_libdir}/libfuse.so.*.*.*
