@@ -18,7 +18,7 @@ Version:	2.5.3
 Release:	%{_rel}
 Epoch:		0
 License:	GPL v2
-Group:		Base/Kernel
+Group:		Applications/System
 Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
 # Source0-md5:	9c7e8b6606b9f158ae20b8521ba2867c
 Source1:	fuse.conf
