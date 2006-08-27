@@ -1,0 +1,5 @@
+- up to 2.2
+- added TODO
+- cleaned up %build and %install (use make, not hardcoded invocations)
+- added doc/* to %doc
+- added fuse.pc
