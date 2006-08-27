@@ -1,0 +1,2 @@
+- mass commit: using %{epoch} without explicit Epoch: declaration
+  requires a modern rpm
