@@ -231,8 +231,8 @@ rm -rf $RPM_BUILD_ROOT
 %post	-p /sbin/ldconfig
 %postun
 /sbin/ldconfig
-if [ "$1" == "0" ] ; then
-    %groupremove fuse
+if [ "$1" = "0" ] ; then
+	%groupremove fuse
 fi
 
 %post -n kernel-misc-fuse
@@ -252,7 +252,7 @@ fi
 %defattr(644,root,root,755)
 %doc README NEWS ChangeLog AUTHORS doc/*
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fuse.conf
-%attr(4750,root,fuse) %{_bindir}/fusermount
+%attr(4754,root,fuse) %{_bindir}/fusermount
 %attr(755,root,root) /sbin/mount.fuse
 %attr(755,root,root) %{_libdir}/libfuse.so.*.*.*
 
