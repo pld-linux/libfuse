@@ -33,9 +33,10 @@ BuildRequires:	rpmbuild(macros) >= 1.217
 %endif
 BuildRequires:	libtool
 BuildRequires:	sed >= 4.0
+Requires(postun):	/sbin/ldconfig
+Requires(postun):	/usr/sbin/groupdel
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
-Requires(postun):	/usr/sbin/groupdel
 Buildroot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %if %{without kernel}
@@ -228,7 +229,7 @@ rm -rf $RPM_BUILD_ROOT
 %groupadd -g 84 fuse
 
 %post	-p /sbin/ldconfig
-%postun	
+%postun
 /sbin/ldconfig
 if [ "$1" == "0" ] ; then
     %groupremove fuse
