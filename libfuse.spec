@@ -10,7 +10,7 @@
 %undefine	with_smp
 %endif
 #
-%define		_rel	5
+%define		_rel	6
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Name:		libfuse
@@ -33,6 +33,9 @@ BuildRequires:	rpmbuild(macros) >= 1.217
 %endif
 BuildRequires:	libtool
 BuildRequires:	sed >= 4.0
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(postun):	/usr/sbin/groupdel
 Buildroot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %if %{without kernel}
@@ -221,8 +224,15 @@ install fuse-smp.ko \
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%pre
+%groupadd -g 84 fuse
+
 %post	-p /sbin/ldconfig
-%postun	-p /sbin/ldconfig
+%postun	
+/sbin/ldconfig
+if [ "$1" == "0" ] ; then
+    %groupremove fuse
+fi
 
 %post -n kernel-misc-fuse
 %depmod %{_kernel_ver}
@@ -241,7 +251,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README NEWS ChangeLog AUTHORS doc/*
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fuse.conf
-%attr(755,root,root) %{_bindir}/fusermount
+%attr(4750,root,fuse) %{_bindir}/fusermount
 %attr(755,root,root) /sbin/mount.fuse
 %attr(755,root,root) %{_libdir}/libfuse.so.*.*.*
 
