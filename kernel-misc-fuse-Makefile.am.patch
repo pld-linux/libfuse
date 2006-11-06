@@ -1,8 +1,8 @@
 --- fuse-2.5.1/util/Makefile.am.orig	2006-01-25 20:16:51.557593000 +0100
 +++ fuse-2.5.1/util/Makefile.am	2006-01-25 20:17:00.537593000 +0100
 @@ -4,15 +4,6 @@
- 
- fusermount_SOURCES = fusermount.c
+ ulockmgr_server_CPPFLAGS = -D_FILE_OFFSET_BITS=64 -D_REENTRANT 
+ ulockmgr_server_LDFLAGS = -pthread
  
 -install-exec-hook:
 -	-chown root $(DESTDIR)$(bindir)/fusermount
@@ -13,6 +13,6 @@
 -		mknod $(DESTDIR)/dev/fuse -m 0666 c 10 229; \
 -	fi
 -
- EXTRA_DIST = mount.fuse udev.rules
+ EXTRA_DIST = mount.fuse udev.rules init_script
  
  MOUNT_FUSE_PATH = @MOUNT_FUSE_PATH@

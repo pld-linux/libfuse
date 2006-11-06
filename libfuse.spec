@@ -10,25 +10,24 @@
 %undefine	with_smp
 %endif
 #
-%define		_rel	6
+%define		_rel	1
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Name:		libfuse
-Version:	2.5.3
+Version:	2.6.0
 Release:	%{_rel}
 Epoch:		0
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
-# Source0-md5:	9c7e8b6606b9f158ae20b8521ba2867c
+# Source0-md5:	fa6c7b07a0be3a3e30d6cf3a6bad5817
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
-Patch1:		%{name}-ac-LIBTOOL.patch
 URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.7}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.9}
 BuildRequires:	rpmbuild(macros) >= 1.217
 %endif
 BuildRequires:	libtool
@@ -139,7 +138,6 @@ montowania w³asnych implementacji systemów plików przez zwyk³ych
 %prep
 %setup -q -n fuse-%{version}
 %patch0 -p1
-%patch1 -p1
 
 sed -i '/FUSERMOUNT_PROG/s,fusermount,%{_bindir}/fusermount,' lib/mount.c
 
@@ -253,19 +251,21 @@ fi
 %doc README NEWS ChangeLog AUTHORS doc/*
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fuse.conf
 %attr(4754,root,fuse) %{_bindir}/fusermount
+%attr(755,root,root) %{_bindir}/ulockmgr_server
 %attr(755,root,root) /sbin/mount.fuse
-%attr(755,root,root) %{_libdir}/libfuse.so.*.*.*
+%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libfuse.so
-%{_libdir}/libfuse.la
+%attr(755,root,root) %{_libdir}/lib*.so
+%{_libdir}/lib*.la
 %{_includedir}/fuse*
+%{_includedir}/ulockmgr.h
 %{_pkgconfigdir}/fuse.pc
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/libfuse.a
+%{_libdir}/lib*.a
 %endif
 
 %if %{with kernel}
