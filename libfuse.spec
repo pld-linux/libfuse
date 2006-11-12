@@ -27,8 +27,8 @@ URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.9}
-BuildRequires:	rpmbuild(macros) >= 1.217
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.9}
+BuildRequires:	rpmbuild(macros) >= 1.326
 %endif
 BuildRequires:	libtool
 BuildRequires:	sed >= 4.0
@@ -84,7 +84,7 @@ Static libfuse libraries.
 %description static -l pl
 Statyczna biblioteka libfuse.
 
-%package -n kernel-misc-fuse
+%package -n kernel%{_alt_kernel}-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -95,40 +95,43 @@ Requires(post,postun):	/sbin/depmod
 %requires_releq_kernel_up
 Requires(postun):	%releq_kernel_up
 %endif
+%if "%{_alt_kernel}" != "%{nil}"
+Provides:	kernel-misc-fuse
+%endif
 
-%description -n kernel-misc-fuse
+%description -n kernel%{_alt_kernel}-misc-fuse
 FUSE (Filesystem in Userspace) is a simple interface for userspace
 programs to export a virtual filesystem to the Linux kernel. FUSE also
 aims to provide a secure method for non privileged users to create and
 mount their own filesystem implementations.
 
-%description -n kernel-misc-fuse -l pl
+%description -n kernel%{_alt_kernel}-misc-fuse -l pl
 FUSE stanowi prosty interfejs dla programów dzia³aj±cych w przestrzeni
 u¿ytkownika eksportuj±cy wirtualny system plików do j±dra Linuksa.
 FUSE ma równie¿ na celu udostêpnienie bezpiecznej metody tworzenia i
 montowania w³asnych implementacji systemów plików przez zwyk³ych
 (nieuprzywilejowanych) u¿ytkowników.
 
-%package -n kernel-smp-misc-fuse
+%package -n kernel%{_alt_kernel}-smp-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
-Provides:	kernel-misc-fuse
 %if %{with dist_kernel}
 %requires_releq_kernel_smp
 Requires(postun):	%releq_kernel_smp
 %endif
+Provides:	kernel-misc-fuse
 
-%description -n kernel-smp-misc-fuse
+%description -n kernel%{_alt_kernel}-smp-misc-fuse
 FUSE (Filesystem in Userspace) is a simple interface for userspace
 programs to export a virtual filesystem to the Linux kernel. FUSE also
 aims to provide a secure method for non privileged users to create and
 mount their own filesystem implementations.
 
-%description -n kernel-smp-misc-fuse -l pl
+%description -n kernel%{_alt_kernel}-smp-misc-fuse -l pl
 FUSE stanowi prosty interfejs dla programów dzia³aj±cych w przestrzeni
 u¿ytkownika eksportuj±cy wirtualny system plików do j±dra Linuksa.
 FUSE ma równie¿ na celu udostêpnienie bezpiecznej metody tworzenia i
@@ -162,36 +165,7 @@ done
 
 %if %{with kernel}
 cd kernel
-for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
-	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
-		exit 1
-	fi
-	install -d o/include/linux
-	ln -sf %{_kernelsrcdir}/config-$cfg o/.config
-	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
-	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
-%if %{with dist_kernel}
-	%{__make} -j1 -C %{_kernelsrcdir} O=$PWD/o prepare scripts
-%else
-	install -d o/include/config
-	touch o/include/config/MARKER
-	ln -sf %{_kernelsrcdir}/scripts o/scripts
-%endif
-	%{__make} -C %{_kernelsrcdir} clean \
-		RCS_FIND_IGNORE="-name '*.ko' -o" \
-		SYSSRC=%{_kernelsrcdir} \
-		SYSOUT=$PWD/o \
-		M=$PWD O=$PWD/o \
-		%{?with_verbose:V=1}
-	%{__make} -C %{_kernelsrcdir} modules \
-		CC="%{__cc}" CPP="%{__cpp}" \
-		SYSSRC=%{_kernelsrcdir} \
-		SYSOUT=$PWD/o \
-		M=$PWD O=$PWD/o \
-		%{?with_verbose:V=1}
-
-	mv fuse.ko fuse-$cfg.ko
-done
+%build_kernel_modules -m fuse
 cd -
 %endif
 
@@ -210,14 +184,7 @@ install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
 %endif
 
 %if %{with kernel}
-cd kernel
-install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/kernel/fs
-install fuse-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/fs/fuse.ko
-%if %{with smp} && %{with dist_kernel}
-install fuse-smp.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/kernel/fs/fuse.ko
-%endif
+%install_kernel_modules -m kernel/fuse -d kernel/fs
 %endif
 
 %clean
@@ -233,16 +200,16 @@ if [ "$1" = "0" ] ; then
 	%groupremove fuse
 fi
 
-%post -n kernel-misc-fuse
+%post -n kernel%{_alt_kernel}-misc-fuse
 %depmod %{_kernel_ver}
 
-%postun -n kernel-misc-fuse
+%postun -n kernel%{_alt_kernel}-misc-fuse
 %depmod %{_kernel_ver}
 
-%post -n kernel-smp-misc-fuse
+%post -n kernel%{_alt_kernel}-smp-misc-fuse
 %depmod %{_kernel_ver}smp
 
-%postun -n kernel-smp-misc-fuse
+%postun -n kernel%{_alt_kernel}-smp-misc-fuse
 %depmod %{_kernel_ver}smp
 
 %if %{with userspace}
@@ -269,12 +236,12 @@ fi
 %endif
 
 %if %{with kernel}
-%files -n kernel-misc-fuse
+%files -n kernel%{_alt_kernel}-misc-fuse
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/fs/fuse.ko*
 
 %if %{with smp} && %{with dist_kernel}
-%files -n kernel-smp-misc-fuse
+%files -n kernel%{_alt_kernel}-smp-misc-fuse
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}smp/kernel/fs/fuse.ko*
 %endif
