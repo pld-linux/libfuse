@@ -28,7 +28,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.9}
-BuildRequires:	rpmbuild(macros) >= 1.326
+BuildRequires:	rpmbuild(macros) >= 1.329
 %endif
 BuildRequires:	libtool
 BuildRequires:	sed >= 4.0
@@ -164,9 +164,7 @@ done
 %endif
 
 %if %{with kernel}
-cd kernel
-%build_kernel_modules -m fuse
-cd -
+%build_kernel_modules -m fuse -C kernel
 %endif
 
 %install
