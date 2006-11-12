@@ -38,7 +38,7 @@ Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Buildroot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%if %{without kernel}
+%if !%{with kernel}
 %undefine with_dist_kernel
 %endif
 
