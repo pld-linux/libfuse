@@ -1,6 +1,6 @@
---- fuse-2.5.1/util/Makefile.am.orig	2006-01-25 20:16:51.557593000 +0100
-+++ fuse-2.5.1/util/Makefile.am	2006-01-25 20:17:00.537593000 +0100
-@@ -4,15 +4,6 @@
+--- fuse-2.6.0/util/Makefile.am.orig	2006-10-07 18:43:50.000000000 +0200
++++ fuse-2.6.0/util/Makefile.am	2006-10-29 15:24:08.785365500 +0100
+@@ -9,15 +9,6 @@
  ulockmgr_server_CPPFLAGS = -D_FILE_OFFSET_BITS=64 -D_REENTRANT 
  ulockmgr_server_LDFLAGS = -pthread
  
@@ -16,3 +16,14 @@
  EXTRA_DIST = mount.fuse udev.rules init_script
  
  MOUNT_FUSE_PATH = @MOUNT_FUSE_PATH@
+@@ -20,10 +20,6 @@
+ 	$(INSTALL_PROGRAM) $(srcdir)/mount.fuse $(DESTDIR)$(MOUNT_FUSE_PATH)/mount.fuse
+ 	$(mkdir_p) $(DESTDIR)$(INIT_D_PATH)
+ 	$(INSTALL_PROGRAM) $(srcdir)/init_script $(DESTDIR)$(INIT_D_PATH)/fuse
+-	@if test -x /usr/sbin/update-rc.d; then \
+-		echo "/usr/sbin/update-rc.d fuse start 34 S . start 41 0 6 ."; \
+-		/usr/sbin/update-rc.d fuse start 34 S . start 41 0 6 .; \
+-	fi
+ 
+ install-data-local:
+ 	$(mkdir_p) $(DESTDIR)$(UDEV_RULES_PATH)
