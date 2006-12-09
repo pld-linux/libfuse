@@ -10,17 +10,17 @@
 %undefine	with_smp
 %endif
 #
-%define		_rel	2
+%define		_rel	1
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Name:		libfuse
-Version:	2.6.0
+Version:	2.6.1
 Release:	%{_rel}
 Epoch:		0
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
-# Source0-md5:	fa6c7b07a0be3a3e30d6cf3a6bad5817
+# Source0-md5:	13e1873086a1d7a95f470bbc7428c528
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
 URL:		http://fuse.sourceforge.net/
@@ -74,7 +74,6 @@ Pliki nag³ówkowe biblioteki libfuse.
 %package static
 Summary:	Filesytem in Userspace - static library
 Summary(pl):	System plików w przestrzeni u¿ytkownika - biblioteka statyczna
-Release:	%{_rel}
 Group:		Development/Libraries
 Requires:	libfuse-devel = %{epoch}:%{version}-%{_rel}
 
