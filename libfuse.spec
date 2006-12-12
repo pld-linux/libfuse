@@ -15,7 +15,7 @@
 %undefine	with_smp
 %endif
 #
-%define		_rel	2
+%define		_rel	3
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Name:		libfuse
@@ -28,15 +28,19 @@ Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
 # Source0-md5:	13e1873086a1d7a95f470bbc7428c528
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
+Patch1:		%{name}-link.patch
 URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	libtool
+BuildRequires:	sed >= 4.0
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.9}
 BuildRequires:	rpmbuild(macros) >= 1.330
 %endif
-BuildRequires:	libtool
-BuildRequires:	sed >= 4.0
+%if %{with userspace}
+BuildRequires:	libselinux-devel
+%endif
 Requires(postun):	/sbin/ldconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(pre):	/usr/bin/getgid
@@ -145,6 +149,7 @@ montowania w³asnych implementacji systemów plików przez zwyk³ych
 %prep
 %setup -q -n fuse-%{version}
 %patch0 -p1
+%patch1 -p1
 
 sed -i '/FUSERMOUNT_PROG/s,fusermount,%{_bindir}/fusermount,' lib/mount.c
 
