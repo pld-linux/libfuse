@@ -15,17 +15,17 @@
 %undefine	with_smp
 %endif
 #
-%define		_rel	3
+%define		_rel	1
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Name:		libfuse
-Version:	2.6.1
+Version:	2.6.2
 Release:	%{_rel}
 Epoch:		0
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
-# Source0-md5:	13e1873086a1d7a95f470bbc7428c528
+# Source0-md5:	fa3837fa6bc920303b02fb3820606964
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
 Patch1:		%{name}-link.patch
@@ -33,6 +33,7 @@ URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
+BuildRequires:	cpp
 BuildRequires:	sed >= 4.0
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.9}

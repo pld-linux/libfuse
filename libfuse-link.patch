@@ -26,7 +26,7 @@
 @@ -31,5 +31,6 @@
  
  libulockmgr_la_SOURCES = ulockmgr.c
- libulockmgr_la_LDFLAGS = -version-number 1:0:0
+ libulockmgr_la_LDFLAGS = -version-number 1:0:1
 +libulockmgr_la_LIBADD = -lpthread
  
  EXTRA_DIST = fuse_versionscript
