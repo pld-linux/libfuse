@@ -3,9 +3,11 @@
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	smp		# without smp packages
+%bcond_without	up		# without up packages
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_with	grsec_kernel	# build for kernel-grsecurity
+%bcond_without  selinux # build without SELinux support
 #
 %if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
 %define	alt_kernel	grsecurity
@@ -40,7 +42,7 @@ BuildRequires:	sed >= 4.0
 BuildRequires:	rpmbuild(macros) >= 1.330
 %endif
 %if %{with userspace}
-BuildRequires:	libselinux-devel
+%{?with_selinux:BuildRequires:	libselinux-devel}
 %endif
 Requires(postun):	/sbin/ldconfig
 Requires(postun):	/usr/sbin/groupdel
