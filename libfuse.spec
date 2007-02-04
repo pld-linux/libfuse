@@ -7,7 +7,7 @@
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_with	grsec_kernel	# build for kernel-grsecurity
-%bcond_without  selinux # build without SELinux support
+%bcond_without	selinux		# build without SELinux support
 #
 %if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
 %define	alt_kernel	grsecurity
@@ -163,6 +163,7 @@ sed -i '/FUSERMOUNT_PROG/s,fusermount,%{_bindir}/fusermount,' lib/mount.c
 %{__autoconf}
 %{__automake}
 %configure \
+	%{!?with_selinux:ac_cv_header_selinux_selinux_h=no} \
 	--%{?with_kernel:en}%{!?with_kernel:dis}able-kernel-module \
 	--enable-lib \
 	--enable-util \
