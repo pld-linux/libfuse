@@ -19,7 +19,7 @@
 #
 %define		_rel	1
 Summary:	Filesystem in Userspace
-Summary(pl):	System plikÛw w przestrzeni uøytkownika
+Summary(pl.UTF-8):   System plik√≥w w przestrzeni u≈ºytkownika
 Name:		libfuse
 Version:	2.6.2
 Release:	%{_rel}
@@ -62,42 +62,42 @@ mount their own filesystem implementations.
 
 This package contains a shared library.
 
-%description -l pl
-FUSE stanowi prosty interfejs dla programÛw dzia≥aj±cych w przestrzeni
-uøytkownika eksportuj±cy wirtualny system plikÛw do j±dra Linuksa.
-FUSE ma rÛwnieø na celu udostÍpnienie bezpiecznej metody tworzenia i
-montowania w≥asnych implementacji systemÛw plikÛw przez zwyk≥ych
-(nieuprzywilejowanych) uøytkownikÛw.
+%description -l pl.UTF-8
+FUSE stanowi prosty interfejs dla program√≥w dzia≈ÇajƒÖcych w przestrzeni
+u≈ºytkownika eksportujƒÖcy wirtualny system plik√≥w do jƒÖdra Linuksa.
+FUSE ma r√≥wnie≈º na celu udostƒôpnienie bezpiecznej metody tworzenia i
+montowania w≈Çasnych implementacji system√≥w plik√≥w przez zwyk≈Çych
+(nieuprzywilejowanych) u≈ºytkownik√≥w.
 
-Ten pakiet zawiera bibliotekÍ wspÛ≥dzielon±.
+Ten pakiet zawiera bibliotekƒô wsp√≥≈ÇdzielonƒÖ.
 
 %package devel
 Summary:	Filesytem in Userspace - Development header files
-Summary(pl):	System plikÛw w przestrzeni uøytkownika - pliki nag≥Ûwkowe
+Summary(pl.UTF-8):   System plik√≥w w przestrzeni u≈ºytkownika - pliki nag≈Ç√≥wkowe
 Group:		Development/Libraries
 Requires:	%{name} = %{epoch}:%{version}-%{_rel}
 
 %description devel
 Libfuse library header files.
 
-%description devel -l pl
-Pliki nag≥Ûwkowe biblioteki libfuse.
+%description devel -l pl.UTF-8
+Pliki nag≈Ç√≥wkowe biblioteki libfuse.
 
 %package static
 Summary:	Filesytem in Userspace - static library
-Summary(pl):	System plikÛw w przestrzeni uøytkownika - biblioteka statyczna
+Summary(pl.UTF-8):   System plik√≥w w przestrzeni u≈ºytkownika - biblioteka statyczna
 Group:		Development/Libraries
 Requires:	libfuse-devel = %{epoch}:%{version}-%{_rel}
 
 %description static
 Static libfuse libraries.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczna biblioteka libfuse.
 
 %package -n kernel%{_alt_kernel}-misc-fuse
 Summary:	Filesystem in Userspace
-Summary(pl):	System plikÛw w przestrzeni uøytkownika
+Summary(pl.UTF-8):   System plik√≥w w przestrzeni u≈ºytkownika
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Base/Kernel
@@ -116,16 +116,16 @@ programs to export a virtual filesystem to the Linux kernel. FUSE also
 aims to provide a secure method for non privileged users to create and
 mount their own filesystem implementations.
 
-%description -n kernel%{_alt_kernel}-misc-fuse -l pl
-FUSE stanowi prosty interfejs dla programÛw dzia≥aj±cych w przestrzeni
-uøytkownika eksportuj±cy wirtualny system plikÛw do j±dra Linuksa.
-FUSE ma rÛwnieø na celu udostÍpnienie bezpiecznej metody tworzenia i
-montowania w≥asnych implementacji systemÛw plikÛw przez zwyk≥ych
-(nieuprzywilejowanych) uøytkownikÛw.
+%description -n kernel%{_alt_kernel}-misc-fuse -l pl.UTF-8
+FUSE stanowi prosty interfejs dla program√≥w dzia≈ÇajƒÖcych w przestrzeni
+u≈ºytkownika eksportujƒÖcy wirtualny system plik√≥w do jƒÖdra Linuksa.
+FUSE ma r√≥wnie≈º na celu udostƒôpnienie bezpiecznej metody tworzenia i
+montowania w≈Çasnych implementacji system√≥w plik√≥w przez zwyk≈Çych
+(nieuprzywilejowanych) u≈ºytkownik√≥w.
 
 %package -n kernel%{_alt_kernel}-smp-misc-fuse
 Summary:	Filesystem in Userspace
-Summary(pl):	System plikÛw w przestrzeni uøytkownika
+Summary(pl.UTF-8):   System plik√≥w w przestrzeni u≈ºytkownika
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Base/Kernel
@@ -142,12 +142,12 @@ programs to export a virtual filesystem to the Linux kernel. FUSE also
 aims to provide a secure method for non privileged users to create and
 mount their own filesystem implementations.
 
-%description -n kernel%{_alt_kernel}-smp-misc-fuse -l pl
-FUSE stanowi prosty interfejs dla programÛw dzia≥aj±cych w przestrzeni
-uøytkownika eksportuj±cy wirtualny system plikÛw do j±dra Linuksa.
-FUSE ma rÛwnieø na celu udostÍpnienie bezpiecznej metody tworzenia i
-montowania w≥asnych implementacji systemÛw plikÛw przez zwyk≥ych
-(nieuprzywilejowanych) uøytkownikÛw.
+%description -n kernel%{_alt_kernel}-smp-misc-fuse -l pl.UTF-8
+FUSE stanowi prosty interfejs dla program√≥w dzia≈ÇajƒÖcych w przestrzeni
+u≈ºytkownika eksportujƒÖcy wirtualny system plik√≥w do jƒÖdra Linuksa.
+FUSE ma r√≥wnie≈º na celu udostƒôpnienie bezpiecznej metody tworzenia i
+montowania w≈Çasnych implementacji system√≥w plik√≥w przez zwyk≈Çych
+(nieuprzywilejowanych) u≈ºytkownik√≥w.
 
 %prep
 %setup -q -n fuse-%{version}
