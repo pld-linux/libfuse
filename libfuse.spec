@@ -19,7 +19,7 @@
 #
 %define		_rel	1
 Summary:	Filesystem in Userspace
-Summary(pl.UTF-8):   System plików w przestrzeni użytkownika
+Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Name:		libfuse
 Version:	2.6.2
 Release:	%{_rel}
@@ -73,7 +73,7 @@ Ten pakiet zawiera bibliotekę współdzieloną.
 
 %package devel
 Summary:	Filesytem in Userspace - Development header files
-Summary(pl.UTF-8):   System plików w przestrzeni użytkownika - pliki nagłówkowe
+Summary(pl.UTF-8):	System plików w przestrzeni użytkownika - pliki nagłówkowe
 Group:		Development/Libraries
 Requires:	%{name} = %{epoch}:%{version}-%{_rel}
 
@@ -85,7 +85,7 @@ Pliki nagłówkowe biblioteki libfuse.
 
 %package static
 Summary:	Filesytem in Userspace - static library
-Summary(pl.UTF-8):   System plików w przestrzeni użytkownika - biblioteka statyczna
+Summary(pl.UTF-8):	System plików w przestrzeni użytkownika - biblioteka statyczna
 Group:		Development/Libraries
 Requires:	libfuse-devel = %{epoch}:%{version}-%{_rel}
 
@@ -97,7 +97,7 @@ Statyczna biblioteka libfuse.
 
 %package -n kernel%{_alt_kernel}-misc-fuse
 Summary:	Filesystem in Userspace
-Summary(pl.UTF-8):   System plików w przestrzeni użytkownika
+Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Base/Kernel
@@ -125,7 +125,7 @@ montowania własnych implementacji systemów plików przez zwykłych
 
 %package -n kernel%{_alt_kernel}-smp-misc-fuse
 Summary:	Filesystem in Userspace
-Summary(pl.UTF-8):   System plików w przestrzeni użytkownika
+Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Base/Kernel
