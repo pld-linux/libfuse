@@ -247,9 +247,11 @@ fi
 %endif
 
 %if %{with kernel}
+%if %{with up} || %{without dist_kernel}
 %files -n kernel%{_alt_kernel}-misc-fuse
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/fs/fuse.ko*
+%endif
 
 %if %{with smp} && %{with dist_kernel}
 %files -n kernel%{_alt_kernel}-smp-misc-fuse
