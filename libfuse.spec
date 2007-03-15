@@ -3,6 +3,7 @@
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	smp		# without smp packages
+%bcond_without	up		# without up packages
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_with	grsec_kernel	# build for kernel-grsecurity
@@ -15,7 +16,7 @@
 %undefine	with_smp
 %endif
 #
-%define		_rel	3
+%define		_rel	4
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Name:		libfuse
@@ -243,9 +244,11 @@ fi
 %endif
 
 %if %{with kernel}
+%if %{with up} || %{without dist_kernel}
 %files -n kernel%{_alt_kernel}-misc-fuse
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/fs/fuse.ko*
+%endif
 
 %if %{with smp} && %{with dist_kernel}
 %files -n kernel%{_alt_kernel}-smp-misc-fuse
