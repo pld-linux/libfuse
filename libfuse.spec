@@ -2,8 +2,6 @@
 # Condtional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
-%bcond_without	smp		# without smp packages
-%bcond_without	up		# without up packages
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_with	grsec_kernel	# build for kernel-grsecurity
@@ -11,10 +9,6 @@
 #
 %if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
 %define	alt_kernel	grsecurity
-%endif
-#
-%ifarch sparc
-%undefine	with_smp
 %endif
 #
 %define		_rel	1
@@ -39,7 +33,7 @@ BuildRequires:	cpp
 BuildRequires:	sed >= 4.0
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.9}
-BuildRequires:	rpmbuild(macros) >= 1.330
+BuildRequires:	rpmbuild(macros) >= 1.379
 %endif
 %if %{with userspace}
 %{?with_selinux:BuildRequires:	libselinux-devel}
@@ -103,8 +97,8 @@ License:	GPL v2
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
 %if %{with dist_kernel}
-%requires_releq_kernel_up
-Requires(postun):	%releq_kernel_up
+%requires_releq_kernel
+Requires(postun):	%releq_kernel
 %endif
 %if "%{_alt_kernel}" != "%{nil}"
 Provides:	kernel-misc-fuse
@@ -117,32 +111,6 @@ aims to provide a secure method for non privileged users to create and
 mount their own filesystem implementations.
 
 %description -n kernel%{_alt_kernel}-misc-fuse -l pl.UTF-8
-FUSE stanowi prosty interfejs dla programów działających w przestrzeni
-użytkownika eksportujący wirtualny system plików do jądra Linuksa.
-FUSE ma również na celu udostępnienie bezpiecznej metody tworzenia i
-montowania własnych implementacji systemów plików przez zwykłych
-(nieuprzywilejowanych) użytkowników.
-
-%package -n kernel%{_alt_kernel}-smp-misc-fuse
-Summary:	Filesystem in Userspace
-Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
-Release:	%{_rel}@%{_kernel_ver_str}
-License:	GPL v2
-Group:		Base/Kernel
-Requires(post,postun):	/sbin/depmod
-%if %{with dist_kernel}
-%requires_releq_kernel_smp
-Requires(postun):	%releq_kernel_smp
-%endif
-Provides:	kernel-misc-fuse
-
-%description -n kernel%{_alt_kernel}-smp-misc-fuse
-FUSE (Filesystem in Userspace) is a simple interface for userspace
-programs to export a virtual filesystem to the Linux kernel. FUSE also
-aims to provide a secure method for non privileged users to create and
-mount their own filesystem implementations.
-
-%description -n kernel%{_alt_kernel}-smp-misc-fuse -l pl.UTF-8
 FUSE stanowi prosty interfejs dla programów działających w przestrzeni
 użytkownika eksportujący wirtualny system plików do jądra Linuksa.
 FUSE ma również na celu udostępnienie bezpiecznej metody tworzenia i
@@ -217,12 +185,6 @@ fi
 %postun -n kernel%{_alt_kernel}-misc-fuse
 %depmod %{_kernel_ver}
 
-%post -n kernel%{_alt_kernel}-smp-misc-fuse
-%depmod %{_kernel_ver}smp
-
-%postun -n kernel%{_alt_kernel}-smp-misc-fuse
-%depmod %{_kernel_ver}smp
-
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
@@ -247,15 +209,7 @@ fi
 %endif
 
 %if %{with kernel}
-%if %{with up} || %{without dist_kernel}
 %files -n kernel%{_alt_kernel}-misc-fuse
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/fs/fuse.ko*
-%endif
-
-%if %{with smp} && %{with dist_kernel}
-%files -n kernel%{_alt_kernel}-smp-misc-fuse
-%defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}smp/kernel/fs/fuse.ko*
-%endif
 %endif
