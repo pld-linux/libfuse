@@ -15,13 +15,13 @@
 Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Name:		libfuse
-Version:	2.6.3
+Version:	2.6.5
 Release:	%{_rel}
 Epoch:		0
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
-# Source0-md5:	3f4f5d07d12dedc0a3fd23472171fe94
+# Source0-md5:	66bd30503df55a87b9868835ca5a45bc
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
 Patch1:		%{name}-link.patch
