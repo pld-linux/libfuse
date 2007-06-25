@@ -1,7 +1,7 @@
 #
 # Condtional build:
 %bcond_without	dist_kernel	# without distribution kernel
-%bcond_without	kernel		# don't build kernel modules
+%bcond_with	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_with	grsec_kernel	# build for kernel-grsecurity
@@ -11,7 +11,7 @@
 %define	alt_kernel	grsecurity
 %endif
 #
-%define		_rel	2
+%define		_rel	3
 Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Name:		libfuse
