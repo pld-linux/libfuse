@@ -1,26 +1,27 @@
---- fuse-2.6.1/util/Makefile.am.orig	2006-12-12 21:38:22.338526000 +0100
-+++ fuse-2.6.1/util/Makefile.am	2006-12-12 21:42:36.913034043 +0100
-@@ -4,6 +4,7 @@
- bin_PROGRAMS = fusermount ulockmgr_server
+--- fuse-2.7.0/util/Makefile.am.orig	2007-07-03 19:07:37.997256742 +0200
++++ fuse-2.7.0/util/Makefile.am	2007-07-03 19:09:22.729253309 +0200
+@@ -5,7 +5,7 @@
+ noinst_PROGRAMS = mount.fuse
  
  fusermount_SOURCES = fusermount.c
-+fusermount_LDADD = $(LIBSELINUX)
+-fusermount_LDADD = ../lib/mount_util.o
++fusermount_LDADD = ../lib/mount_util.o $(LIBSELINUX)
+ fusermount_CPPFLAGS = -I../lib
+ mount_fuse_SOURCES = mount.fuse.c
  
- ulockmgr_server_SOURCES = ulockmgr_server.c
- ulockmgr_server_CPPFLAGS = -D_FILE_OFFSET_BITS=64 -D_REENTRANT 
---- fuse-2.6.1/configure.in.orig	2006-12-01 12:58:57.000000000 +0100
-+++ fuse-2.6.1/configure.in	2006-12-12 21:42:20.996126989 +0100
-@@ -87,7 +87,9 @@
+--- fuse-2.7.0/configure.in.orig	2007-07-02 13:32:15.000000000 +0200
++++ fuse-2.7.0/configure.in	2007-07-03 19:10:56.654033356 +0200
+@@ -98,5 +98,9 @@
  AM_CONDITIONAL(LINUX, test "$arch" = linux)
  AM_CONDITIONAL(BSD, test "$arch" = bsd)
  
--AC_CHECK_HEADERS(selinux/selinux.h, AC_CHECK_LIB(selinux, getfilecon))
 +LIBSELINUX=
 +AC_CHECK_HEADERS(selinux/selinux.h, AC_CHECK_LIB(selinux, getfilecon, [LIBSELINUX=-lselinux]))
 +AC_SUBST(LIBSELINUX)
- 
++
  AC_CONFIG_FILES([fuse.pc Makefile lib/Makefile util/Makefile example/Makefile include/Makefile])
  AC_OUTPUT
+
 --- fuse-2.6.1/lib/Makefile.am.orig	2006-12-01 12:59:21.000000000 +0100
 +++ fuse-2.6.1/lib/Makefile.am	2006-12-12 21:51:19.302803339 +0100
 @@ -31,5 +31,6 @@
@@ -30,3 +31,4 @@
 +libulockmgr_la_LIBADD = -lpthread
  
  EXTRA_DIST = fuse_versionscript
+
