@@ -11,17 +11,17 @@
 %define	alt_kernel	grsecurity
 %endif
 #
-%define		_rel	3
+%define		_rel	1
 Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Name:		libfuse
-Version:	2.6.5
+Version:	2.7.0
 Release:	%{_rel}
 Epoch:		0
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
-# Source0-md5:	66bd30503df55a87b9868835ca5a45bc
+# Source0-md5:	7c3d52f81816e3a8e0cc2b5822a37e86
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
 Patch1:		%{name}-link.patch
