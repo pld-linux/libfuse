@@ -16,7 +16,7 @@
 %undefine	with_smp
 %endif
 #
-%define		_rel	53.1
+%define		_rel	54
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Name:		libfuse
