@@ -16,6 +16,10 @@
 %undefine	with_smp
 %endif
 #
+%if %{without kernel}
+%undefine with_dist_kernel
+%endif
+#
 %define		_rel	55
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
@@ -47,10 +51,6 @@ Requires(postun):	/usr/sbin/groupdel
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Buildroot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%if !%{with kernel}
-%undefine with_dist_kernel
-%endif
 
 %description
 FUSE (Filesystem in Userspace) is a simple interface for userspace
