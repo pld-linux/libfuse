@@ -44,6 +44,7 @@ BuildRequires:	sed >= 4.0
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.9}
 BuildRequires:	rpmbuild(macros) >= 1.330
+BuildRequires:	cpp
 %endif
 %if %{with userspace}
 BuildRequires:	libselinux-devel
