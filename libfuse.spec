@@ -23,9 +23,10 @@
 %endif
 
 %define		_rel	56
+%define		pname	libfuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
-Name:		libfuse
+Name:		%{pname}%{_alt_kernel}
 Version:	2.6.1
 Release:	%{_rel}
 Epoch:		0
@@ -35,7 +36,7 @@ Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
 # Source0-md5:	13e1873086a1d7a95f470bbc7428c528
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
-Patch1:		%{name}-link.patch
+Patch1:		%{pname}-link.patch
 URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -77,7 +78,7 @@ Ten pakiet zawiera bibliotekê wspó³dzielon±.
 Summary:	Filesytem in Userspace - Development header files
 Summary(pl):	System plików w przestrzeni u¿ytkownika - pliki nag³ówkowe
 Group:		Development/Libraries
-Requires:	%{name} = %{epoch}:%{version}-%{_rel}
+Requires:	%{pname} = %{epoch}:%{version}-%{_rel}
 
 %description devel
 Libfuse library header files.
