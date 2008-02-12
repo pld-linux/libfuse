@@ -22,7 +22,7 @@
 %undefine	with_userspace
 %endif
 
-%define		_rel	60
+%define		_rel	61
 %define		pname	libfuse
 Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
