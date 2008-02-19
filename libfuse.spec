@@ -23,7 +23,7 @@ Summary:	Filesystem in Userspace
 Summary(pl):	System plików w przestrzeni u¿ytkownika
 Name:		%{pname}%{_alt_kernel}
 Version:	2.6.1
-Release:	62
+Release:	63
 Epoch:		0
 License:	GPL v2
 Group:		Applications/System
