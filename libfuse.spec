@@ -193,19 +193,26 @@ fi
 %attr(4754,root,fuse) %{_bindir}/fusermount
 %attr(755,root,root) %{_bindir}/ulockmgr_server
 %attr(755,root,root) /sbin/mount.fuse
-%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
+%attr(755,root,root) %{_libdir}/libfuse.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libfuse.so.2
+%attr(755,root,root) %{_libdir}/libulockmgr.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libulockmgr.so.1
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/lib*.so
-%{_libdir}/lib*.la
-%{_includedir}/fuse*
+%attr(755,root,root) %{_libdir}/libfuse.so
+%attr(755,root,root) %{_libdir}/libulockmgr.so
+%{_libdir}/libfuse.la
+%{_libdir}/libulockmgr.la
+%{_includedir}/fuse
+%{_includedir}/fuse.h
 %{_includedir}/ulockmgr.h
 %{_pkgconfigdir}/fuse.pc
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/lib*.a
+%{_libdir}/libfuse.a
+%{_libdir}/libulockmgr.a
 %endif
 
 %if %{with kernel}
