@@ -1,3 +1,7 @@
+# TODO:
+# - unpackaged:
+#   /etc/init.d/fuse
+#   /etc/udev/rules.d/99-fuse.rules
 #
 # Condtional build:
 %bcond_without	dist_kernel	# without distribution kernel
