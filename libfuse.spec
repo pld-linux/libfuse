@@ -4,17 +4,24 @@
 %bcond_with	kernel		# build kernel modules
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
-%bcond_with	grsec_kernel	# build for kernel-grsecurity
 %bcond_without	selinux		# build without SELinux support
-#
-%if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
-%define	alt_kernel	grsecurity
+
+%ifarch sparc
+%undefine	with_smp
 %endif
-#
+
+%if %{without kernel}
+%undefine with_dist_kernel
+%endif
+%if "%{_alt_kernel}" != "%{nil}"
+%undefine	with_userspace
+%endif
+
+%define		pname	libfuse
 %define		_rel	1
 Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
-Name:		libfuse
+Name:		%{pname}%{_alt_kernel}
 Version:	2.7.3
 Release:	%{_rel}
 Epoch:		0
@@ -24,7 +31,7 @@ Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
 # Source0-md5:	98563fc7b265b7479a3178181cbcf59a
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
-Patch1:		%{name}-link.patch
+Patch1:		%{pname}-link.patch
 URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -42,11 +49,8 @@ Requires(postun):	/sbin/ldconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
+Provides:	group(fuse)
 Buildroot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%if !%{with kernel}
-%undefine with_dist_kernel
-%endif
 
 %description
 FUSE (Filesystem in Userspace) is a simple interface for userspace
@@ -69,7 +73,7 @@ Ten pakiet zawiera bibliotekę współdzieloną.
 Summary:	Filesytem in Userspace - Development header files
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika - pliki nagłówkowe
 Group:		Development/Libraries
-Requires:	%{name} = %{epoch}:%{version}-%{_rel}
+Requires:	%{pname} = %{epoch}:%{version}-%{_rel}
 
 %description devel
 Libfuse library header files.
