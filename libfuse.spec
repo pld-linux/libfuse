@@ -22,7 +22,7 @@
 %endif
 
 %define		pname	libfuse
-%define		_rel	1
+%define		_rel	2
 Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Name:		%{pname}%{_alt_kernel}
