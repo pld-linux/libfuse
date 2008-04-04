@@ -104,13 +104,7 @@ Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
-%if %{with dist_kernel}
-%requires_releq_kernel
-Requires(postun):	%releq_kernel
-%endif
-%if "%{_alt_kernel}" != "%{nil}"
-Provides:	kernel-misc-fuse
-%endif
+%{?with_dist_kernel:Requires:	kernel%{_alt_kernel}(vermagic) = %{_kernel_ver}}
 
 %description -n kernel%{_alt_kernel}-misc-fuse
 FUSE (Filesystem in Userspace) is a simple interface for userspace
