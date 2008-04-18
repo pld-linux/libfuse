@@ -176,7 +176,7 @@ install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-%groupadd -g 84 fuse || :
+%groupadd -g 84 fuse
 
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
