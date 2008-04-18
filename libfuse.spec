@@ -49,8 +49,6 @@ BuildRequires:	rpmbuild(macros) >= 1.379
 %if %{with userspace}
 %{?with_selinux:BuildRequires:	libselinux-devel}
 %endif
-Requires(postun):	/sbin/ldconfig
-Requires(postun):	/usr/sbin/groupdel
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Provides:	group(fuse)
@@ -181,8 +179,7 @@ rm -rf $RPM_BUILD_ROOT
 %groupadd -g 84 fuse || :
 
 %post	-p /sbin/ldconfig
-%postun
-/sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %post -n kernel%{_alt_kernel}-misc-fuse
 %depmod %{_kernel_ver}
