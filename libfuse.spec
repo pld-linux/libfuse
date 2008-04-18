@@ -22,7 +22,7 @@
 %endif
 
 %define		pname	libfuse
-%define		_rel	2
+%define		_rel	3
 Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Name:		%{pname}%{_alt_kernel}
@@ -178,14 +178,11 @@ install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-%groupadd -g 84 fuse
+%groupadd -g 84 fuse || :
 
 %post	-p /sbin/ldconfig
 %postun
 /sbin/ldconfig
-if [ "$1" = "0" ] ; then
-	%groupremove fuse
-fi
 
 %post -n kernel%{_alt_kernel}-misc-fuse
 %depmod %{_kernel_ver}
