@@ -22,17 +22,17 @@
 %endif
 
 %define		pname	libfuse
-%define		_rel	3
+%define		rel	3
 Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Name:		%{pname}%{_alt_kernel}
-Version:	2.7.3
-Release:	%{_rel}
+Version:	2.7.4
+Release:	%{rel}
 Epoch:		0
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
-# Source0-md5:	98563fc7b265b7479a3178181cbcf59a
+# Source0-md5:	4879f06570d2225667534c37fea04213
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
 Patch1:		%{pname}-link.patch
@@ -75,7 +75,7 @@ Ten pakiet zawiera bibliotekę współdzieloną.
 Summary:	Filesytem in Userspace - Development header files
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika - pliki nagłówkowe
 Group:		Development/Libraries
-Requires:	%{pname} = %{epoch}:%{version}-%{_rel}
+Requires:	%{pname} = %{epoch}:%{version}-%{rel}
 
 %description devel
 Libfuse library header files.
@@ -87,7 +87,7 @@ Pliki nagłówkowe biblioteki libfuse.
 Summary:	Filesytem in Userspace - static library
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika - biblioteka statyczna
 Group:		Development/Libraries
-Requires:	libfuse-devel = %{epoch}:%{version}-%{_rel}
+Requires:	libfuse-devel = %{epoch}:%{version}-%{rel}
 
 %description static
 Static libfuse libraries.
@@ -98,7 +98,7 @@ Statyczna biblioteka libfuse.
 %package -n kernel%{_alt_kernel}-misc-fuse
 Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
-Release:	%{_rel}@%{_kernel_ver_str}
+Release:	%{rel}@%{_kernel_ver_str}
 License:	GPL v2
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
