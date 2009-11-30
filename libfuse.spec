@@ -39,8 +39,9 @@ Patch1:		%{pname}-link.patch
 URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	libtool
 BuildRequires:	cpp
+BuildRequires:	gettext-devel
+BuildRequires:	libtool
 BuildRequires:	sed >= 4.0
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
