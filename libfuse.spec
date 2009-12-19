@@ -26,13 +26,13 @@
 Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Name:		%{pname}%{_alt_kernel}
-Version:	2.8.0
+Version:	2.8.1
 Release:	%{rel}
 Epoch:		0
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
-# Source0-md5:	faa62f2cf051866c61242f28e88d0832
+# Source0-md5:	0e3505ce90155983f1bc995eb2cf6fa7
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
 Patch1:		%{pname}-link.patch
