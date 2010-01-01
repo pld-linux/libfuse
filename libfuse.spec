@@ -53,7 +53,7 @@ BuildRequires:	rpmbuild(macros) >= 1.379
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Provides:	group(fuse)
-Buildroot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 FUSE (Filesystem in Userspace) is a simple interface for userspace
