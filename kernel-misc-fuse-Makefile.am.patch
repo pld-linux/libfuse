@@ -1,11 +1,10 @@
 --- fuse-2.7.0/util/Makefile.am.orig	2007-04-25 18:06:47.000000000 +0200
 +++ fuse-2.7.0/util/Makefile.am	2007-07-03 19:06:14.006315824 +0200
-@@ -13,15 +13,6 @@
+@@ -13,14 +13,6 @@
  ulockmgr_server_CPPFLAGS = -D_FILE_OFFSET_BITS=64 -D_REENTRANT 
  ulockmgr_server_LDFLAGS = -pthread
  
 -install-exec-hook:
--	-chown root $(DESTDIR)$(bindir)/fusermount
 -	-chmod u+s $(DESTDIR)$(bindir)/fusermount
 -	@if test ! -e $(DESTDIR)/dev/fuse; then \
 -		$(mkdir_p) $(DESTDIR)/dev; \
