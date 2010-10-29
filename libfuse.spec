@@ -1,33 +1,16 @@
 # TODO:
 # - unpackaged:
-#   /etc/init.d/fuse
+#   /etc/rc.d/init.d/fuse
 #   /etc/udev/rules.d/99-fuse.rules
 #
 # Condtional build:
-%bcond_without	dist_kernel	# without distribution kernel
-%bcond_with	kernel		# build kernel modules
-%bcond_without	userspace	# don't build userspace tools
-%bcond_with	verbose		# verbose build (V=1)
 %bcond_without	selinux		# build without SELinux support
-
-%ifarch sparc
-%undefine	with_smp
-%endif
-
-%if %{without kernel}
-%undefine with_dist_kernel
-%endif
-%if "%{_alt_kernel}" != "%{nil}"
-%undefine	with_userspace
-%endif
-
-%define		pname	libfuse
-%define		rel	1
+#
 Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
-Name:		%{pname}%{_alt_kernel}
+Name:		libfuse
 Version:	2.8.5
-Release:	%{rel}
+Release:	1
 Epoch:		0
 License:	GPL v2
 Group:		Applications/System
@@ -35,21 +18,15 @@ Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
 # Source0-md5:	8aa2fd689de00b73963620483084ae3b
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
-Patch1:		%{pname}-link.patch
+Patch1:		%{name}-link.patch
 URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	cpp
 BuildRequires:	gettext-devel
+%{?with_selinux:BuildRequires:	libselinux-devel}
 BuildRequires:	libtool
 BuildRequires:	sed >= 4.0
-%if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
-BuildRequires:	rpmbuild(macros) >= 1.379
-%endif
-%if %{with userspace}
-%{?with_selinux:BuildRequires:	libselinux-devel}
-%endif
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Provides:	group(fuse)
@@ -76,7 +53,7 @@ Ten pakiet zawiera bibliotekę współdzieloną.
 Summary:	Filesytem in Userspace - Development header files
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika - pliki nagłówkowe
 Group:		Development/Libraries
-Requires:	%{pname} = %{epoch}:%{version}-%{rel}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description devel
 Libfuse library header files.
@@ -88,41 +65,13 @@ Pliki nagłówkowe biblioteki libfuse.
 Summary:	Filesytem in Userspace - static library
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika - biblioteka statyczna
 Group:		Development/Libraries
-Requires:	libfuse-devel = %{epoch}:%{version}-%{rel}
+Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
 
 %description static
 Static libfuse libraries.
 
 %description static -l pl.UTF-8
 Statyczna biblioteka libfuse.
-
-%package -n kernel%{_alt_kernel}-misc-fuse
-Summary:	Filesystem in Userspace
-Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
-Release:	%{rel}@%{_kernel_ver_str}
-License:	GPL v2
-Group:		Base/Kernel
-Requires(post,postun):	/sbin/depmod
-%if %{with dist_kernel}
-%requires_releq_kernel
-Requires(postun):	%releq_kernel
-%endif
-%if "%{_alt_kernel}" != "%{nil}"
-Provides:	kernel-misc-fuse
-%endif
-
-%description -n kernel%{_alt_kernel}-misc-fuse
-FUSE (Filesystem in Userspace) is a simple interface for userspace
-programs to export a virtual filesystem to the Linux kernel. FUSE also
-aims to provide a secure method for non privileged users to create and
-mount their own filesystem implementations.
-
-%description -n kernel%{_alt_kernel}-misc-fuse -l pl.UTF-8
-FUSE stanowi prosty interfejs dla programów działających w przestrzeni
-użytkownika eksportujący wirtualny system plików do jądra Linuksa.
-FUSE ma również na celu udostępnienie bezpiecznej metody tworzenia i
-montowania własnych implementacji systemów plików przez zwykłych
-(nieuprzywilejowanych) użytkowników.
 
 %prep
 %setup -q -n fuse-%{version}
@@ -138,39 +87,22 @@ sed -i '/FUSERMOUNT_PROG/s,fusermount,%{_bindir}/fusermount,' lib/mount.c
 %{__autoconf}
 %{__automake}
 %configure \
+	INIT_D_PATH=/etc/rc.d/init.d \
 	%{!?with_selinux:ac_cv_header_selinux_selinux_h=no} \
-	--%{?with_kernel:en}%{!?with_kernel:dis}able-kernel-module \
 	--enable-lib \
-	--enable-util \
-	%{?with_kernel:--with-kernel=%{_kernelsrcdir}}
+	--enable-util
 
-%if %{with userspace}
-for DIR in include lib util; do
-%{__make} -C $DIR
-done
-%endif
-
-%if %{with kernel}
-%build_kernel_modules -m fuse -C kernel
-%endif
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_pkgconfigdir},%{_sysconfdir}}
 
-%if %{with userspace}
-for DIR in include lib util; do
-%{__make} -C $DIR install \
+%{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
-done
 
 install fuse.pc $RPM_BUILD_ROOT%{_pkgconfigdir}
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
-%endif
-
-%if %{with kernel}
-%install_kernel_modules -m kernel/fuse -d kernel/fs
-%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -181,13 +113,6 @@ rm -rf $RPM_BUILD_ROOT
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
 
-%post -n kernel%{_alt_kernel}-misc-fuse
-%depmod %{_kernel_ver}
-
-%postun -n kernel%{_alt_kernel}-misc-fuse
-%depmod %{_kernel_ver}
-
-%if %{with userspace}
 %files
 %defattr(644,root,root,755)
 %doc README NEWS ChangeLog AUTHORS doc/*
@@ -215,10 +140,3 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libfuse.a
 %{_libdir}/libulockmgr.a
-%endif
-
-%if %{with kernel}
-%files -n kernel%{_alt_kernel}-misc-fuse
-%defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}/kernel/fs/fuse.ko*
-%endif
