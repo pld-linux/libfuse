@@ -9,16 +9,17 @@
 Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Name:		libfuse
-Version:	2.8.5
+Version:	2.8.6
 Release:	1
 Epoch:		0
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://dl.sourceforge.net/fuse/fuse-%{version}.tar.gz
-# Source0-md5:	8aa2fd689de00b73963620483084ae3b
+Source0:	http://downloads.sourceforge.net/fuse/fuse-%{version}.tar.gz
+# Source0-md5:	eaa32c8cef56a981656a786f258a002a
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
 Patch1:		%{name}-link.patch
+Patch2:		%{name}-clone.patch
 URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -77,10 +78,16 @@ Statyczna biblioteka libfuse.
 %setup -q -n fuse-%{version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 sed -i '/FUSERMOUNT_PROG/s,fusermount,%{_bindir}/fusermount,' lib/mount.c
 
+# gold is missing base versioning
+install -d ld-dir
+[ ! -x /usr/bin/ld.bfd ] || ln -sf /usr/bin/ld.bfd ld-dir/ld
+
 %build
+PATH=$(pwd)/ld-dir:$PATH
 %{__libtoolize}
 %{__aclocal}
 %{__autoheader}
