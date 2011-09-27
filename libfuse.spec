@@ -10,7 +10,7 @@ Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Name:		libfuse
 Version:	2.8.6
-Release:	1
+Release:	2
 Epoch:		0
 License:	GPL v2
 Group:		Applications/System
@@ -103,10 +103,15 @@ PATH=$(pwd)/ld-dir:$PATH
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_pkgconfigdir},%{_sysconfdir}}
+install -d $RPM_BUILD_ROOT{/%{_lib},%{_pkgconfigdir},%{_sysconfdir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+mv -f $RPM_BUILD_ROOT%{_libdir}/libfuse.so.* $RPM_BUILD_ROOT/%{_lib}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libfuse.so
+ln -sf /%{_lib}/$(cd $RPM_BUILD_ROOT/%{_lib}; echo libfuse.so.*.*) \
+	$RPM_BUILD_ROOT%{_libdir}/libfuse.so
 
 install fuse.pc $RPM_BUILD_ROOT%{_pkgconfigdir}
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
@@ -127,8 +132,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(4754,root,fuse) %{_bindir}/fusermount
 %attr(755,root,root) %{_bindir}/ulockmgr_server
 %attr(755,root,root) /sbin/mount.fuse
-%attr(755,root,root) %{_libdir}/libfuse.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libfuse.so.2
+%attr(755,root,root) /%{_lib}/libfuse.so.*.*.*
+%attr(755,root,root) %ghost /%{_lib}/libfuse.so.2
 %attr(755,root,root) %{_libdir}/libulockmgr.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libulockmgr.so.1
 
