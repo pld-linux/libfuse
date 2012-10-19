@@ -3,34 +3,27 @@
 #   /etc/rc.d/init.d/fuse
 #   /etc/udev/rules.d/99-fuse.rules
 #
-# Condtional build:
-%bcond_without	selinux		# build without SELinux support
-#
 Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Name:		libfuse
-Version:	2.8.6
-Release:	2
+Version:	2.9.2
+Release:	1
 Epoch:		0
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://downloads.sourceforge.net/fuse/fuse-%{version}.tar.gz
-# Source0-md5:	eaa32c8cef56a981656a786f258a002a
+# Source0-md5:	7d80d0dc9cc2b9199a0c53787c151205
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
-Patch1:		%{name}-link.patch
-Patch2:		%{name}-clone.patch
 URL:		http://fuse.sourceforge.net/
-BuildRequires:	autoconf
+BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
-BuildRequires:	cpp
-BuildRequires:	gettext-devel
-%{?with_selinux:BuildRequires:	libselinux-devel}
 BuildRequires:	libtool
 BuildRequires:	sed >= 4.0
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Provides:	group(fuse)
+Suggests:	mount >= 2.18
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -77,8 +70,6 @@ Statyczna biblioteka libfuse.
 %prep
 %setup -q -n fuse-%{version}
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 sed -i '/FUSERMOUNT_PROG/s,fusermount,%{_bindir}/fusermount,' lib/mount.c
 
@@ -90,12 +81,12 @@ install -d ld-dir
 PATH=$(pwd)/ld-dir:$PATH
 %{__libtoolize}
 %{__aclocal}
-%{__autoheader}
 %{__autoconf}
+%{__autoheader}
 %{__automake}
 %configure \
 	INIT_D_PATH=/etc/rc.d/init.d \
-	%{!?with_selinux:ac_cv_header_selinux_selinux_h=no} \
+	--disable-silent-rules \
 	--enable-lib \
 	--enable-util
 
@@ -136,6 +127,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost /%{_lib}/libfuse.so.2
 %attr(755,root,root) %{_libdir}/libulockmgr.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libulockmgr.so.1
+%{_mandir}/man1/fusermount.1*
+%{_mandir}/man1/ulockmgr_server.1*
+%{_mandir}/man8/mount.fuse.8*
 
 %files devel
 %defattr(644,root,root,755)

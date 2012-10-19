@@ -1,13 +1,13 @@
---- fuse-2.7.0/util/Makefile.am.orig	2007-04-25 18:06:47.000000000 +0200
-+++ fuse-2.7.0/util/Makefile.am	2007-07-03 19:06:14.006315824 +0200
-@@ -13,14 +13,6 @@
+--- fuse-2.9.2/util/Makefile.am.orig	2012-07-19 14:33:49.000000000 +0200
++++ fuse-2.9.2/util/Makefile.am	2012-10-19 16:23:14.396963408 +0200
+@@ -20,14 +20,6 @@
  ulockmgr_server_CPPFLAGS = -D_FILE_OFFSET_BITS=64 -D_REENTRANT 
  ulockmgr_server_LDFLAGS = -pthread
  
 -install-exec-hook:
 -	-chmod u+s $(DESTDIR)$(bindir)/fusermount
 -	@if test ! -e $(DESTDIR)/dev/fuse; then \
--		$(mkdir_p) $(DESTDIR)/dev; \
+-		$(MKDIR_P) $(DESTDIR)/dev; \
 -		echo "mknod $(DESTDIR)/dev/fuse -m 0666 c 10 229 || true"; \
 -		mknod $(DESTDIR)/dev/fuse -m 0666 c 10 229 || true; \
 -	fi
@@ -15,9 +15,9 @@
  EXTRA_DIST = udev.rules init_script
  
  MOUNT_FUSE_PATH = @MOUNT_FUSE_PATH@
-@@ -33,10 +24,6 @@
- 	$(INSTALL_PROGRAM) $(srcdir)/mount.fuse $(DESTDIR)$(MOUNT_FUSE_PATH)/mount.fuse
- 	$(mkdir_p) $(DESTDIR)$(INIT_D_PATH)
+@@ -39,10 +31,6 @@
+ 	$(INSTALL_PROGRAM) $(builddir)/mount.fuse $(DESTDIR)$(MOUNT_FUSE_PATH)/mount.fuse
+ 	$(MKDIR_P) $(DESTDIR)$(INIT_D_PATH)
  	$(INSTALL_SCRIPT) $(srcdir)/init_script $(DESTDIR)$(INIT_D_PATH)/fuse
 -	@if test -x /usr/sbin/update-rc.d; then \
 -		echo "/usr/sbin/update-rc.d fuse start 34 S . start 41 0 6 . || true"; \
@@ -25,8 +25,8 @@
 -	fi
  
  install-data-local:
- 	$(mkdir_p) $(DESTDIR)$(UDEV_RULES_PATH)
-@@ -46,7 +33,3 @@
+ 	$(MKDIR_P) $(DESTDIR)$(UDEV_RULES_PATH)
+@@ -52,7 +40,3 @@
  	rm -f $(DESTDIR)$(MOUNT_FUSE_PATH)/mount.fuse
  	rm -f $(DESTDIR)$(UDEV_RULES_PATH)/99-fuse.rules
  	rm -f $(DESTDIR)$(INIT_D_PATH)/fuse
