@@ -1,0 +1,12 @@
+diff -urN fuse-2.9.2.org/configure.in fuse-2.9.2/configure.in
+--- fuse-2.9.2.org/configure.in	2012-10-01 17:58:00.000000000 +0200
++++ fuse-2.9.2/configure.in	2013-05-08 23:32:36.488170649 +0200
+@@ -4,7 +4,7 @@
+ AC_CANONICAL_TARGET
+ AM_INIT_AUTOMAKE
+ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES(yes)])
+-AM_CONFIG_HEADER(include/config.h)
++AC_CONFIG_HEADERS(include/config.h)
+ 
+ AC_PROG_LIBTOOL
+ AC_PROG_CC

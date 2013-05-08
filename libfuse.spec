@@ -1,13 +1,8 @@
-# TODO:
-# - unpackaged:
-#   /etc/rc.d/init.d/fuse
-#   /etc/udev/rules.d/99-fuse.rules
-#
 Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Name:		libfuse
 Version:	2.9.2
-Release:	1
+Release:	2
 Epoch:		0
 License:	GPL v2
 Group:		Applications/System
@@ -15,6 +10,7 @@ Source0:	http://downloads.sourceforge.net/fuse/fuse-%{version}.tar.gz
 # Source0-md5:	7d80d0dc9cc2b9199a0c53787c151205
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
+Patch1:		fuse-build.patch
 URL:		http://fuse.sourceforge.net/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -70,6 +66,7 @@ Statyczna biblioteka libfuse.
 %prep
 %setup -q -n fuse-%{version}
 %patch0 -p1
+%patch1 -p1
 
 sed -i '/FUSERMOUNT_PROG/s,fusermount,%{_bindir}/fusermount,' lib/mount.c
 
@@ -106,6 +103,12 @@ ln -sf /%{_lib}/$(cd $RPM_BUILD_ROOT/%{_lib}; echo libfuse.so.*.*) \
 
 install fuse.pc $RPM_BUILD_ROOT%{_pkgconfigdir}
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
+
+# part of default udev rules nowdays
+rm $RPM_BUILD_ROOT/etc/udev/rules.d/99-fuse.rules
+
+# not needed
+rm $RPM_BUILD_ROOT/etc/rc.d/init.d/fuse
 
 %clean
 rm -rf $RPM_BUILD_ROOT
