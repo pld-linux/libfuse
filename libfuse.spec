@@ -41,7 +41,7 @@ Ten pakiet zawiera bibliotekę współdzieloną.
 Summary:	Filesytem in Userspace - Development header files
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika - pliki nagłówkowe
 Group:		Development/Libraries
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
 Libfuse library header files.
@@ -53,7 +53,7 @@ Pliki nagłówkowe biblioteki libfuse.
 Summary:	Filesytem in Userspace - static library
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika - biblioteka statyczna
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static libfuse libraries.
