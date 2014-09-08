@@ -121,7 +121,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README NEWS ChangeLog AUTHORS doc/*
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fuse.conf
-%attr(4754,root,fuse) %{_bindir}/fusermount
+%attr(4755,root,root) %{_bindir}/fusermount
 %attr(755,root,root) %{_bindir}/ulockmgr_server
 %attr(755,root,root) /sbin/mount.fuse
 %attr(755,root,root) /%{_lib}/libfuse.so.*.*.*
