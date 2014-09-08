@@ -3,7 +3,6 @@ Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Name:		libfuse
 Version:	2.9.3
 Release:	2
-Epoch:		0
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://downloads.sourceforge.net/fuse/fuse-%{version}.tar.gz
