@@ -1,15 +1,15 @@
 Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Name:		libfuse
-Version:	2.9.4
+Version:	2.9.7
 Release:	1
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://downloads.sourceforge.net/fuse/fuse-%{version}.tar.gz
-# Source0-md5:	ecb712b5ffc6dffd54f4a405c9b372d8
+Source0:	http://github.com/libfuse/libfuse/releases/download/fuse-%{version}/fuse-%{version}.tar.gz
+# Source0-md5:	9bd4ce8184745fd3d000ca2692adacdb
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
-URL:		http://fuse.sourceforge.net/
+URL:		https://github.com/libfuse/libfuse
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
 BuildRequires:	libtool
@@ -118,7 +118,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README NEWS ChangeLog AUTHORS doc/*
+%doc README.md NEWS ChangeLog AUTHORS doc/*
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fuse.conf
 %attr(4755,root,root) %{_bindir}/fusermount
 %attr(755,root,root) %{_bindir}/ulockmgr_server
