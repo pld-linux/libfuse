@@ -5,7 +5,8 @@ Version:	2.9.7
 Release:	1
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://github.com/libfuse/libfuse/releases/download/fuse-%{version}/fuse-%{version}.tar.gz
+#Source0Download: https://github.com/libfuse/libfuse/releases
+Source0:	https://github.com/libfuse/libfuse/releases/download/fuse-%{version}/fuse-%{version}.tar.gz
 # Source0-md5:	9bd4ce8184745fd3d000ca2692adacdb
 Source1:	fuse.conf
 Patch0:		kernel-misc-fuse-Makefile.am.patch
