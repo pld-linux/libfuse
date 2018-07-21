@@ -39,28 +39,28 @@ montowania własnych implementacji systemów plików przez zwykłych
 Ten pakiet zawiera bibliotekę współdzieloną.
 
 %package devel
-Summary:	Filesytem in Userspace - Development header files
+Summary:	Filesystem in Userspace - development header files
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika - pliki nagłówkowe
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
-Libfuse library header files.
+FUSE libraries header files.
 
 %description devel -l pl.UTF-8
-Pliki nagłówkowe biblioteki libfuse.
+Pliki nagłówkowe bibliotek FUSE.
 
 %package static
-Summary:	Filesytem in Userspace - static library
-Summary(pl.UTF-8):	System plików w przestrzeni użytkownika - biblioteka statyczna
+Summary:	Filesystem in Userspace - static libraries
+Summary(pl.UTF-8):	System plików w przestrzeni użytkownika - biblioteki statyczne
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
-Static libfuse libraries.
+Static FUSE libraries.
 
 %description static -l pl.UTF-8
-Statyczna biblioteka libfuse.
+Statyczne biblioteki FUSE.
 
 %prep
 %setup -q -n fuse-%{version}
