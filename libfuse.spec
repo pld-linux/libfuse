@@ -9,6 +9,7 @@ Group:		Applications/System
 Source0:	https://github.com/libfuse/libfuse/releases/download/fuse-%{version}/fuse-%{version}.tar.gz
 # Source0-md5:	8000410aadc9231fd48495f7642f3312
 Patch0:		kernel-misc-fuse-Makefile.am.patch
+Patch1:		%{name}-arm64.patch
 URL:		https://github.com/libfuse/libfuse
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -92,6 +93,7 @@ Narzędzia do montowania systemów plików opartych na FUSE.
 %prep
 %setup -q -n fuse-%{version}
 %patch0 -p1
+%patch1 -p1
 
 sed -i '/FUSERMOUNT_PROG/s,fusermount,%{_bindir}/fusermount,' lib/mount.c
 
