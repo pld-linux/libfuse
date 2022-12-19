@@ -2,7 +2,7 @@ Summary:	Filesystem in Userspace
 Summary(pl.UTF-8):	System plików w przestrzeni użytkownika
 Name:		libfuse
 Version:	2.9.9
-Release:	2
+Release:	3
 License:	LGPL v2 (library), GPL v2 (tools)
 Group:		Applications/System
 #Source0Download: https://github.com/libfuse/libfuse/releases
@@ -10,6 +10,7 @@ Source0:	https://github.com/libfuse/libfuse/releases/download/fuse-%{version}/fu
 # Source0-md5:	8000410aadc9231fd48495f7642f3312
 Patch0:		kernel-misc-fuse-Makefile.am.patch
 Patch1:		%{name}-arm64.patch
+Patch2:         fuse-2.9.9-closefrom-glibc-2-34.patch
 URL:		https://github.com/libfuse/libfuse
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -94,6 +95,7 @@ Narzędzia do montowania systemów plików opartych na FUSE.
 %setup -q -n fuse-%{version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 sed -i '/FUSERMOUNT_PROG/s,fusermount,%{_bindir}/fusermount,' lib/mount.c
 
